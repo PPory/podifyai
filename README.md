@@ -143,6 +143,7 @@ EC2 部署入口：
 - `VOICE_MANAGEMENT_GUIDE.md`：音色管理说明
 - `SENDGRID_INTEGRATION_README.md`：邮件发送说明
 - `DATABASE_SETUP_README.md`：数据库初始化说明
+- `VPS_DEPLOY_RUNBOOK.md`：VPS / EC2 全流程部署与排障手册
 
 ## 备注
 
