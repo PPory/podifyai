@@ -1,0 +1,44 @@
+# 环境变量 / 密钥
+.env
+.env.*
+.env.local
+!.env.example
+!.env.template
+
+# 数据库
+app.db
+*.db
+*.sqlite
+
+# 用户数据（音色、历史音频、上传文件）
+voices_audio/
+voice_previews/
+history_audio/
+pdf_storage/
+temp_uploads/
+
+# 运行时 / 调试文件
+debug_last_tts.wav
+debug_heads/
+diag_*.mp3
+diag_*.wav
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude 内部文件
+.claude/
+
+# 归档
+_archive/
+
+# 历史记录
+history.json
+
+# examples 临时文件
+examples/tmp_*.jsonl
+
+# IDE
+.idea/
+.vscode/
+*.swp

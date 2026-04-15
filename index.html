@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>PodifyAI</title>
+  <link rel="icon" href="/static/OpenMOSS_logo.png">
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-frame">
+    <aside class="lh-sidebar" aria-label="侧边栏导航">
+      <div class="sidebar-inner">
+        <div class="brand-row">
+          <button class="brand" aria-label="PodifyAI">
+            <span class="brand-icon" aria-hidden="true">〰️</span>
+                          <span class="brand-name">PodifyAI</span>
+          </button>
+          <button class="toggle-btn" id="sidebar-toggle" aria-label="折叠/展开侧边栏" title="折叠/展开" data-tooltip="折叠/展开">
+            <svg t="1755771139592" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10834" width="24" height="24"><path d="M810.666667 85.333333a128 128 0 0 1 128 128v597.333334a128 128 0 0 1-128 128H213.333333a128 128 0 0 1-128-128V213.333333a128 128 0 0 1 128-128h597.333334zM341.333333 170.666667H213.333333l-5.802666 0.426666a42.538667 42.538667 0 0 0-36.48 36.437334L170.666667 213.333333v597.333334l0.426666 5.802666a42.538667 42.538667 0 0 0 36.437334 36.48L213.333333 853.333333h128V170.666667z m469.333334 0h-384v682.666666h384l5.802666-0.426666a42.538667 42.538667 0 0 0 36.48-36.437334L853.333333 810.666667V213.333333l-0.426666-5.802666A42.538667 42.538667 0 0 0 810.666667 170.666667z" fill="#666666" p-id="10835"></path></svg>
+        </div>
+
+        <nav class="nav-section nav-primary">
+          <button class="nav-item" id="sidebar-search" data-key="/" data-tooltip="主页" aria-label="主页">
+            <svg t="1755771358690" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12949" width="24" height="24"><path d="M600.669091 915.316364h-176.872727c-12.8 0-23.272727-10.472727-23.272728-23.272728s10.472727-23.272727 23.272728-23.272727h176.872727c12.8 0 23.272727 10.472727 23.272727 23.272727s-10.472727 23.272727-23.272727 23.272728z" fill="#040000" p-id="12950"></path><path d="M600.669091 915.316364h-176.872727c-12.8 0-23.272727-10.472727-23.272728-23.272728v-174.545454c0-60.276364 48.872727-109.149091 109.149091-109.149091h5.12c60.276364 0 109.149091 48.872727 109.149091 109.149091v174.545454c0 12.8-10.472727 23.272727-23.272727 23.272728z m-153.832727-46.545455h130.327272v-151.272727c0-34.443636-28.16-62.603636-62.603636-62.603637h-5.12c-34.443636 0-62.603636 28.16-62.603636 62.603637v151.272727z" fill="#040000" p-id="12951"></path><path d="M777.774545 915.316364h-177.105454c-12.8 0-23.272727-10.472727-23.272727-23.272728v-174.545454c0-34.443636-28.16-62.603636-62.603637-62.603637h-5.12c-34.443636 0-62.603636 28.16-62.603636 62.603637v174.545454c0 12.8-10.472727 23.272727-23.272727 23.272728H246.690909c-26.763636 0-48.64-20.945455-48.64-46.778182V537.367273H143.127273c-19.549091 0-36.770909-11.636364-44.218182-29.789091-7.447273-18.152727-3.258182-38.632727 10.705454-52.363637l368.872728-358.4c18.618182-18.152727 48.174545-18.152727 66.792727 0l197.585455 192c9.309091 8.843636 9.541818 23.738182 0.465454 32.814546a23.179636 23.179636 0 0 1-32.814545 0.465454l-197.585455-192-370.734545 358.4 0.930909 2.327273H221.090909c12.8 0 23.272727 10.472727 23.272727 23.272727v354.443637l155.927273 0.232727v-151.272727c0-60.276364 48.872727-109.149091 109.149091-109.149091h5.12c60.276364 0 109.149091 48.872727 109.149091 109.149091v151.272727h153.832727l2.094546-354.676364c0-12.8 10.472727-23.272727 23.272727-23.272727h77.730909l17.221818-18.850909-16.290909 16.756364-80.523636-77.963637a22.970182 22.970182 0 0 1-0.465455-32.814545 22.970182 22.970182 0 0 1 32.814546-0.465455l80.523636 77.963637c13.963636 13.730909 18.385455 34.443636 10.938182 52.596363-7.447273 17.92-24.669091 29.789091-44.218182 29.789091H826.181818v331.170909c0.232727 25.134545-21.643636 46.312727-48.407273 46.312728z" fill="#040000" p-id="12952"></path></svg>
+            <span class="label">主页</span>
+          </button>
+          <a class="nav-item" href="#history-library" data-tooltip="资料库" aria-label="资料库">
+            <svg t="1755771675441" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="21975" width="24" height="24"><path d="M817.3 265.2H681.4v-1.5c0-76.7-63.3-139.2-141.1-139.2H207.9c-77.8 0-141.1 62.4-141.1 139.2V790c0 76.7 63.3 139.2 141.1 139.2h609.5c77.8 0 141.1-62.4 141.1-139.2V404.4c-0.1-76.8-63.4-139.2-141.2-139.2z m-609.4-90.6h332.5c50.2 0 91.1 40 91.1 89.2v51.5h185.9c48.7 0 88.5 37.6 91 84.6H116.8V263.7c0-49.1 40.9-89.1 91.1-89.1z m609.4 704.6H207.9c-50.2 0-91.1-40-91.1-89.2V449.9h791.6V790c0 49.1-40.8 89.2-91.1 89.2z" p-id="21976"></path></svg>
+            <span class="label">资料库</span>
+          </a>
+        </nav>
+
+        <!-- 探索和创作台选项已移除 -->
+
+        <nav class="nav-section nav-system">
+          <button class="nav-item" id="nav-credits" data-tooltip="积分" aria-label="积分">
+            <svg t="1755771876622" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="28519" width="24" height="24"><path d="M908.8 171.776h-62.976l0.64-0.64c21.12-22.4 30.848-49.536 27.904-78.464-2.56-25.728-17.024-46.464-40.576-58.368-51.584-26.112-133.504-4.096-172.672 19.072-48.64 28.672-115.712 81.792-149.12 108.928-33.408-27.264-100.608-80.256-149.12-108.928-39.168-23.04-121.088-45.056-172.672-19.072-23.552 11.904-37.888 32.64-40.576 58.368-2.944 28.928 6.656 56.064 27.904 78.464 0.256 0.256 0.384 0.512 0.64 0.64H115.2c-38.784 0-70.4 31.616-70.4 70.4v204.8c0 31.104 20.352 57.6 48.512 66.816-1.152 5.248-1.792 10.752-1.792 16.384v340.608c0 42.368 34.432 76.8 76.8 76.8h687.36c42.368 0 76.8-34.432 76.8-76.8V530.176c0-5.632-0.64-11.136-1.792-16.384 28.16-9.216 48.512-35.712 48.512-66.816v-204.8c0-38.784-31.616-70.4-70.4-70.4z m6.4 70.4v204.8c0 3.456-2.944 6.4-6.4 6.4H544v-217.6h364.8c3.456 0 6.4 2.944 6.4 6.4zM693.76 108.416c33.152-19.584 89.216-28.16 111.232-17.024 4.864 2.432 5.376 4.48 5.76 7.68 4.608 44.672-88.576 67.968-117.632 72.576h-89.728c29.696-22.784 63.616-47.36 90.368-63.232z m-480.512-9.216c0.384-3.2 0.896-5.248 5.76-7.68 22.016-11.136 78.208-2.56 111.232 17.024 26.752 15.744 60.672 40.448 90.368 63.36h-89.728c-29.056-4.736-122.112-28.032-117.632-72.704zM108.8 242.176c0-3.456 2.944-6.4 6.4-6.4h364.8v217.6H115.2c-3.456 0-6.4-2.944-6.4-6.4v-204.8z m46.72 628.736V530.176c0-6.912 5.888-12.8 12.8-12.8H480v366.336H168.32c-6.912 0-12.8-5.888-12.8-12.8z m712.96 0c0 6.912-5.888 12.8-12.8 12.8H544V517.376h311.68c6.912 0 12.8 5.888 12.8 12.8v340.736z" p-id="28520"></path></svg>
+            <span class="label">积分</span>
+            <span class="badge" id="credits-badge"></span>
+          </button>
+          <button class="nav-item" id="nav-settings" data-tooltip="设置" aria-label="设置">
+            <svg t="1755771751312" class="icon" viewBox="0 0 1084 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="23069" width="24" height="24"><path d="M704.808016 1024c-19.734215 0-38.906057-8.154423-51.284675-21.817555-16.877611-18.500827-70.335095-66.602977-114.091628-66.602977-43.449783 0-97.731657 48.376946-113.324755 65.331244-12.353056 13.43307-31.390695 21.440509-50.926801 21.44051-9.304734 0-18.085437-1.776591-26.099266-5.30421l-1.405936-0.613499-133.007844-74.386744-1.322857-0.93303c-24.214036-16.941517-33.429301-50.102412-21.434119-77.102755 0.089469-0.21089 12.263588-28.304028 12.263588-53.923999 0-77.735426-63.241514-140.983331-140.989721-140.983331h-4.709883l-0.856342 0.012781c-22.271289 0-40.40146-19.78534-46.197747-50.402771-0.460124-2.447605-11.34973-60.525503-11.34973-106.269516 0-45.750404 10.883215-103.821912 11.34973-106.269517 5.860193-31.007258 24.386582-50.920411 47.047699-50.383599h4.709882c77.741817 0 140.989721-63.247905 140.989721-140.989721 0-25.607189-12.167729-53.693937-12.295541-53.975124-11.982401-26.987562-2.70962-60.135676 21.606666-77.032459l1.380372-0.958592 140.369832-77.096365 1.463451-0.619889c7.898799-3.367853 16.55808-5.080538 25.728611-5.080538 19.484981 0 38.567354 7.847674 51.035441 20.986775 16.615596 17.395251 69.127269 62.634406 111.631242 62.634406 42.107754 0 94.293506-44.344469 110.857977-61.43297 12.38501-12.870696 31.326789-20.577776 50.639224-20.577777 9.355859 0 18.174906 1.7702 26.201516 5.259476l1.425107 0.619889 135.576872 75.319774 1.335638 0.93303c24.252379 16.928736 33.499597 50.07685 21.491634 77.109146-0.10225 0.2045-12.269978 28.297638-12.269978 53.917608 0 77.741817 63.241514 140.989721 140.983331 140.989722h4.716272c22.629163-0.504858 41.174725 19.376341 47.041309 50.383599 0.460124 2.447605 11.343339 60.525503 11.343339 106.275907 0 45.744013-10.883215 103.828302-11.343339 106.269517-5.866583 31.007258-24.412145 50.850114-47.041309 50.389989h-4.716272c-77.729035 0-140.983331 63.241514-140.983331 140.983331 0 25.619971 12.167729 53.693937 12.295541 53.981515 11.96962 26.962 2.722401 60.110113-21.555541 77.038849l-1.3612 0.933029-137.858321 76.201679-1.437888 0.62628c-7.886017 3.399807-16.506955 5.118882-25.619971 5.118882z m0.325922-52.198533c0.639061 0.408999 2.422043 1.124748 4.307273 1.124748l0.210891-0.006391 132.471033-73.217262c-3.195307-7.432284-17.817031-43.488127-17.817032-81.084108 0-112.468412 88.586688-204.633844 199.636385-210.404568 1.597653-8.831828 10.276107-58.467726 10.276107-95.725004 0-37.250888-8.678454-86.880394-10.276107-95.725004-111.049696-5.770724-199.636384-97.936156-199.636385-210.404568 0-37.659887 14.672849-73.760464 17.848985-81.128842l-130.342959-72.405654a7.400331 7.400331 0 0 0-0.536812-0.019172c-2.223934 0-4.300883 0.805217-4.978288 1.271732-2.198371 2.249496-21.082635 21.408556-48.217181 40.497319-40.165008 28.259294-78.150816 42.58705-112.896583 42.587051-35.08447 0-73.370637-14.608943-113.80405-43.424221-27.300702-19.459419-46.280825-38.982744-48.472806-41.270584-0.690186-0.479296-2.792698-1.310076-5.035803-1.310076l-0.466515 0.012782-134.982545 74.13112c3.233651 7.521752 17.810641 43.513689 17.810641 81.045764 0 112.468412-88.593079 204.633844-199.649165 210.404568-1.597653 8.831828-10.276107 58.474116-10.276107 95.725004 0 37.238107 8.672063 86.880394 10.276107 95.725004 111.056086 5.764334 199.642775 97.942547 199.642774 210.404568 0 37.730184-14.723974 73.901058-17.855374 81.179967l127.76115 71.434281a9.074672 9.074672 0 0 0 4.543727-1.073623c2.39009-2.569027 21.472462-22.769757 48.958492-42.912972 40.970225-30.016713 79.901844-45.245546 115.714844-45.245546 36.164483 0 75.38368 15.51641 116.596748 46.11467 27.645795 20.520261 46.804855 41.098037 49.188555 43.699017z" fill="#2c2c2c" p-id="23070"></path><path d="M539.891837 699.510194c-103.527943 0-187.756233-84.22829-187.756233-187.756233s84.22829-187.756233 187.756233-187.756233c103.534334 0 187.756233 84.22829 187.756233 187.756233s-84.221899 187.756233-187.756233 187.756233z m0-321.236983c-73.600699 0-133.48075 59.880051-133.48075 133.48075 0 73.60709 59.880051 133.48075 133.48075 133.480751 73.600699 0 133.48075-59.873661 133.48075-133.480751 0-73.600699-59.873661-133.48075-133.48075-133.48075z" fill="#2c2c2c" p-id="23071"></path></svg>
+            <span class="label">设置</span>
+          </button>
+        </nav>
+
+        <div class="nav-footer">
+          <div class="nav-section nav-user" id="user-info-section" style="display: none;">
+            <div class="user-dropdown-container">
+              <button class="nav-item user-profile-btn" id="user-profile-btn">
+                <span class="user-avatar" id="user-avatar"></span>
+                <span class="label" id="username-display">未登录</span>
+              </button>
+              
+              <!-- 用户下拉菜单 -->
+              <div class="user-dropdown-menu hidden" id="user-dropdown-menu">
+                <button class="dropdown-item" id="account-settings-btn">
+                  <svg t="1755956475842" class="dropdown-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7223" width="24" height="24"><path d="M748.48 302.464c0-140.8-108.8-256-249.6-262.4-140.8 0-256 108.8-262.4 249.6 0 89.6 44.8 179.2 121.6 224-166.4 57.6-281.6 217.6-275.2 396.8v32h320c19.2 0 38.4-12.8 38.4-32s-12.8-38.4-32-38.4h-256c12.8-179.2 166.4-320 345.6-320 44.8 0 89.6 6.4 134.4 25.6 19.2 6.4 38.4 0 44.8-19.2 6.4-12.8 0-32-19.2-38.4h-6.4c-6.4 0-19.2-6.4-25.6-6.4 76.8-38.4 128-121.6 121.6-211.2z m-256 185.6c-108.8 0-192-89.6-192-192 0-108.8 89.6-192 192-192s192 89.6 192 192-83.2 192-192 192z" fill="currentColor" p-id="7224"></path><path d="M940.48 750.464c-6.4-19.2-19.2-32-32-32s-25.6-12.8-25.6-25.6v-12.8c6.4-19.2 0-38.4-12.8-51.2l-51.2-25.6c-12.8-6.4-32 0-38.4 6.4-6.4 6.4-12.8 12.8-19.2 12.8-6.4 0-12.8-6.4-19.2-12.8-19.2 0-32-6.4-51.2 0l-51.2 25.6c-19.2 12.8-25.6 25.6-19.2 51.2v12.8c0 12.8-12.8 25.6-25.6 25.6s-25.6 12.8-32 25.6c-6.4 12.8-6.4 25.6-6.4 32 0 12.8 0 25.6 6.4 32 6.4 19.2 19.2 32 38.4 32 12.8 0 25.6 12.8 25.6 25.6v12.8c-6.4 19.2 0 38.4 12.8 51.2l38.4 25.6c19.2 6.4 32 0 51.2-6.4 6.4-12.8 19.2-19.2 32-12.8 6.4 0 12.8 6.4 12.8 12.8 6.4 6.4 19.2 12.8 25.6 12.8h12.8l51.2-25.6c12.8-12.8 19.2-32 12.8-51.2v-6.4c0-12.8 12.8-25.6 25.6-25.6s25.6-12.8 32-25.6c6.4-12.8 6.4-25.6 6.4-32v-51.2z m-51.2 44.8c-19.2 6.4-32 12.8-51.2 25.6-12.8 12.8-19.2 32-19.2 57.6v19.2l-19.2 12.8-6.4-6.4c-25.6-25.6-70.4-25.6-96 0l-6.4 6.4-19.2-6.4v-19.2c0-19.2-6.4-38.4-19.2-57.6-12.8-12.8-32-25.6-51.2-25.6v-25.6c19.2-6.4 32-12.8 51.2-25.6 12.8-12.8 19.2-32 19.2-57.6v-19.2l19.2-12.8 6.4 6.4c25.6 25.6 70.4 25.6 96 0l6.4-12.8 19.2 12.8v19.2c0 19.2 6.4 38.4 19.2 57.6 12.8 12.8 32 25.6 51.2 25.6v25.6z" fill="currentColor" p-id="7225"></path><path d="M742.08 705.664c-44.8 0-76.8 32-76.8 76.8s32 76.8 76.8 76.8 76.8-32 76.8-76.8-32-76.8-76.8-76.8z m0 102.4c-12.8 0-25.6-12.8-25.6-25.6s12.8-25.6 25.6-25.6 25.6 12.8 25.6 25.6c6.4 12.8-6.4 25.6-25.6 25.6z" fill="currentColor" p-id="7226"></path></svg>
+                  <span>账户设置</span>
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item logout-item" id="dropdown-logout-btn">
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  <span>退出账号</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <a class="nav-item" href="#help" data-tooltip="帮助中心｜快捷键表（K）" aria-label="帮助中心｜快捷键表（K）">
+            <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg>
+            <span class="label">帮助</span>
+          </a>
+          <a class="nav-item" href="#feedback" data-tooltip="反馈" aria-label="反馈">
+            <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="label">反馈</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="content-rail">
+      <!-- 主页容器 -->
+      <div class="page" id="route-home">
+        <div class="main-content">
+          <!-- Header / Logo -->
+          <header class="header">
+            <div class="logo-container">
+              <div class="waveform-icon">〰️</div>
+              <h1 class="brand">
+                <span class="brand-listen">Podify</span>
+                <span class="brand-hub">AI</span>
+              </h1>
+            </div>
+            <p class="tagline">把你的创意转为播客</p>
+          </header>
+
+      <!-- Mode Selection -->
+      <div class="mode-selection" title="选择合成模式">
+        <button id="roles-mode" class="mode-btn active" type="button" title="合成会话">
+          <span class="mode-icon">🎙️</span>
+          <span>对话式</span>
+        </button>
+        <button id="single-mode" class="mode-btn" type="button" title="合成单人解说">
+          <span class="mode-icon">🎧</span>
+          <span>单人式</span>
+        </button>
+      </div>
+
+      <!-- Main Input Area -->
+      <main class="main-input-area" id="composer">
+        <div class="input-container">
+          <textarea id="main-textarea" class="main-textarea" placeholder="输入文字、上传文件或粘贴链接，我们帮你生成播客"></textarea>
+          
+          <!-- Bottom Controls Container -->
+          <div class="bottom-controls-container">
+            <!-- Left Controls -->
+            <div class="left-controls">
+              <div class="composer-toolbar">
+                <div class="control-group">
+                  <button class="control-btn" id="model-select-btn" aria-label="脚本风格" title="脚本风格">
+                    <svg t="1756641100300" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13051" width="18" height="18"><path d="M924.086857 282.843429l-362.057143 210.724571v415.378286s227.108571-137.728 238.738286-144.384c11.190857-6.436571 26.331429 0.731429 28.891429 17.554285 0.146286 0.731429 1.462857 4.973714 1.462857 5.705143 1.536 18.212571-0.731429 26.770286-12.580572 33.718857l-273.993143 162.742858c-6.948571 3.510857-16.091429 5.485714-30.72-1.755429-7.168-3.218286-424.301714-255.268571-424.301714-255.268571a24.649143 24.649143 0 0 1-11.702857-20.772572V251.611429c0-2.486857-2.413714-25.526857 13.385143-35.913143L517.558857 2.633143a24.137143 24.137143 0 0 1 21.796572 0l426.276571 213.138286c9.508571 4.827429 17.481143 14.628571 16.749714 23.844571a29.622857 29.622857 0 0 1 0.512 5.412571v437.028572c0 16.164571-13.165714 29.257143-29.330285 29.257143h-0.073143a29.403429 29.403429 0 0 1-29.403429-29.330286V282.843429zM495.908571 903.972571V493.714286L141.604571 290.230857v397.677714L495.908571 904.045714zM191.195429 236.251429l337.188571 191.122285 337.042286-191.122285L528.310857 67.876571 191.195429 236.251429z" fill="#2c2c2c" p-id="13052"></path></svg>
+                    <span id="model-select-text">选择风格｜精简</span>
+                  </button>
+                  <div id="model-popover" class="popover hidden" role="dialog" aria-modal="true">
+                    <div id="style-list" class="popover-list"><!-- js 动态注入三种风格 --></div>
+                    <div class="popover-divider"></div>
+                    <div class="popover-item control-row" style="cursor:default;">
+                      <span>保留细节</span>
+                      <label class="switch" style="margin-left:12px;">
+                        <input type="checkbox" id="length-toggle" />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <button class="control-btn" id="voice-select-btn">
+                    <svg t="1756641031209" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="11074" width="18" height="18"><path d="M743.125333 280.874667v462.250666H650.666667V280.874667h92.458666z m-369.792 0v462.250666H280.874667V280.874667H373.333333z m-184.874666 138.666666v184.917334H96V419.541333h92.458667z m739.541333 0v184.917334h-92.458667V419.541333h92.458667z m-369.792-277.333333v739.584h-92.416V142.208h92.416z" fill="#2c2c2c" p-id="11075"></path></svg>
+                    <span id="voice-select-text">音色选择</span>
+                  </button>
+                  <div id="voice-dropdown" class="voice-dropdown popover--panel hidden" role="dialog" aria-modal="true">
+                    <!-- 双音色选择状态显示 -->
+                    <div class="voice-selection-status" id="voice-selection-status">
+                      <div class="selected-voice-display">
+                        <div class="voice-slot" id="voice-s1-slot">
+                          <span class="voice-slot-label">S1</span>
+                          <span class="voice-slot-name" id="voice-s1-name">S1未选择</span>
+                        </div>
+                        <button class="voice-swap-btn" id="voice-swap-btn" title="交换S1和S2">
+                          <svg t="1757748637633" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1486" width="24" height="24">
+                            <path d="M859.04 352H95.936a32 32 0 1 0 0 64h832a32 32 0 0 0 24.448-52.64l-189.088-224a32 32 0 0 0-48.896 41.28L859.04 352zM164.896 640H928a32 32 0 1 0 0-64H96a32 32 0 0 0-24.448 52.64l189.088 224a32 32 0 0 0 48.896-41.28L164.896 640z" fill="currentColor" p-id="1487"></path>
+                          </svg>
+                        </button>
+                        <div class="voice-slot" id="voice-s2-slot">
+                          <span class="voice-slot-label">S2</span>
+                          <span class="voice-slot-name" id="voice-s2-name">S2未选择</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="voice-list">
+                      <!-- 动态加载的音色列表 -->
+                    </div>
+                    <div class="voice-actions">
+                      <button class="voice-action-btn" id="add-voice-btn">添加新音色</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="right-controls">
+              <button class="icon-btn" id="link-btn" data-tooltip="粘贴链接" aria-label="粘贴链接">
+                <svg t="1755414099164" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9280" width="20" height="20"><path d="M607.934444 417.856853c-6.179746-6.1777-12.766768-11.746532-19.554358-16.910135l-0.01228 0.011256c-6.986111-6.719028-16.47216-10.857279-26.930349-10.857279-21.464871 0-38.864146 17.400299-38.864146 38.864146 0 9.497305 3.411703 18.196431 9.071609 24.947182l-0.001023 0c0.001023 0.001023 0.00307 0.00307 0.005117 0.004093 2.718925 3.242857 5.953595 6.03853 9.585309 8.251941 3.664459 3.021823 7.261381 5.997598 10.624988 9.361205l3.203972 3.204995c40.279379 40.229237 28.254507 109.539812-12.024871 149.820214L371.157763 796.383956c-40.278355 40.229237-105.761766 40.229237-146.042167 0l-3.229554-3.231601c-40.281425-40.278355-40.281425-105.809861 0-145.991002l75.93546-75.909877c9.742898-7.733125 15.997346-19.668968 15.997346-33.072233 0-23.312962-18.898419-42.211381-42.211381-42.211381-8.797363 0-16.963347 2.693342-23.725354 7.297197-0.021489-0.045025-0.044002-0.088004-0.066515-0.134053l-0.809435 0.757247c-2.989077 2.148943-5.691629 4.669346-8.025791 7.510044l-78.913281 73.841775c-74.178443 74.229608-74.178443 195.632609 0 269.758863l3.203972 3.202948c74.178443 74.127278 195.529255 74.127278 269.707698 0l171.829484-171.880649c74.076112-74.17435 80.357166-191.184297 6.282077-265.311575L607.934444 417.856853z" fill="#515151" p-id="9281"></path><path d="M855.61957 165.804257l-3.203972-3.203972c-74.17742-74.178443-195.528232-74.178443-269.706675 0L410.87944 334.479911c-74.178443 74.178443-78.263481 181.296089-4.085038 255.522628l3.152806 3.104711c3.368724 3.367701 6.865361 6.54302 10.434653 9.588379 2.583848 2.885723 5.618974 5.355985 8.992815 7.309476 0.025583 0.020466 0.052189 0.041956 0.077771 0.062422l0.011256-0.010233c5.377474 3.092431 11.608386 4.870938 18.257829 4.870938 20.263509 0 36.68962-16.428158 36.68962-36.68962 0-5.719258-1.309832-11.132548-3.645017-15.95846l0 0c-4.850471-10.891048-13.930267-17.521049-20.210297-23.802102l-3.15383-3.102664c-40.278355-40.278355-24.982998-98.79612 15.295358-139.074476l171.930791-171.830507c40.179095-40.280402 105.685018-40.280402 145.965419 0l3.206018 3.152806c40.279379 40.281425 40.279379 105.838513 0 146.06775l-75.686796 75.737962c-10.296507 7.628748-16.97358 19.865443-16.97358 33.662681 0 23.12365 18.745946 41.87062 41.87062 41.87062 8.048303 0 15.563464-2.275833 21.944801-6.211469 0.048095 0.081864 0.093121 0.157589 0.141216 0.240477l1.173732-1.083681c3.616364-2.421142 6.828522-5.393847 9.529027-8.792247l79.766718-73.603345C929.798013 361.334535 929.798013 239.981676 855.61957 165.804257z" fill="#515151" p-id="9282"></path></svg>
+              </button>
+              <button class="icon-btn" id="upload-btn" data-tooltip="上传PDF" aria-label="上传PDF">
+                <svg t="1755416408283" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12799" width="25" height="25"><path d="M622.4 100.2h-261c-101.3 0-185.6 82.2-188 184.3v441c-2.2 103.3 80.1 189.2 183.2 191.4H691.5c103.3-3.7 183.8-87.6 183.2-190.8V348c0-8-3.1-15.6-8.6-21.4l-208.4-217c-5.8-6.1-13.9-9.5-22.3-9.5h-13z m33.3 96.3l123.6 128.8h-48.7c-41.3-0.1-74.9-33.7-74.9-75v-53.8z m157.4 529.7c0.4 69.8-53.9 126.5-122.6 128.9H358.1c-69.3-1.5-124.4-59-123-129v-441c1.6-68.1 58.2-123.3 126.4-123.3H594v88.3c0 75.2 61.2 136.6 136.5 136.7h82.6v339.4z" p-id="12800" fill="#515151"></path><path d="M530.1 383.9c-5.6-5.6-13.3-9-21.8-9-7.6 0-14.3 3-19.7 7.6-0.7 0.6-1.6 0.8-2.2 1.4L369.7 501.2c-12.1 12.1-12 31.6 0.1 43.6 6 6 13.9 9 21.8 9s15.8-3 21.9-9.1l64.1-64.4V676c0 17 13.8 30.9 30.9 30.9s30.9-13.8 30.9-30.9V480.5l64 64.3c12 12.1 31.5 12.1 43.6 0.1 12.1-12 12.1-31.5 0.1-43.6l-117-117.4z" p-id="12801" fill="#515151"></path></svg>
+              </button>
+              <button class="create-btn" id="create-script-btn">
+                <span>创作</span>
+              </button>
+              <button class="create-btn" id="synthesize-podcast-btn" disabled>
+                <span>播客</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 隐藏的PDF上传输入 -->
+        <input type="file" id="pdf-upload-input" accept=".pdf" style="display:none;">
+      </main>
+      
+      <!-- 资料库 -->
+      <section id="history-library">
+        <div class="library-header">
+          <div class="library-title-group">
+            <h2>作品集</h2>
+            <a href="#" class="browse-all-link">
+              <svg t="1755656390445" class="icon icon-arrow-down" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4896" width="16" height="16"><path d="M257.216 164.832A48 48 0 0 1 314.88 88.224l3.936 2.944 448 374.4a48 48 0 0 1 4.736 69.12l-3.392 3.36-437.024 393.6a48 48 0 0 1-67.744-67.84l3.488-3.488 395.936-356.544L257.216 164.832z" fill="#3C3C3C" p-id="4897"></path></svg>
+              <svg t="1755656421967" class="icon icon-arrow-right" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5050" width="16" height="16"><path d="M461.726 767.572c14.172 14.172 33.496 27.055 51.533 23.19 18.036 3.22 35.429-10.95 49.6-23.19l438.029-439.961c22.546-22.546 22.546-58.619 0-81.164-22.546-22.546-58.619-22.546-81.164 0L511.97 665.15 102.93 246.447c-22.546-22.546-58.619-22.546-81.164 0-22.546 22.545-22.546 58.618 0 81.164l439.961 439.961z" fill="#000000" p-id="5051"></path></svg>
+            </a>
+          </div>
+          <div class="history-controls">
+            <div class="history-filters" aria-label="筛选">
+              <button class="chip chip-mode active" data-mode="all" aria-pressed="true">全部</button>
+              <button class="chip chip-mode" data-mode="role" aria-pressed="false">对话式</button>
+              <button class="chip chip-mode" data-mode="single" aria-pressed="false">单人</button>
+              <select class="chip-select" id="history-sort-select" aria-label="排序">
+                <option value="recent">最新</option>
+                <option value="duration">按时长</option>
+                <option value="plays">按播放数</option>
+              </select>
+            </div>
+            <button class="play-all-btn">播放全部</button>
+          </div>
+        </div>
+        <div class="history-grid">
+          <!-- 历史记录卡片将在这里动态生成 -->
+        </div>
+      </section>
+    </div>
+    
+    <!-- 详情页容器：与 #route-home 同级 -->
+    <div class="page hidden" id="route-history-detail" aria-live="polite"></div>
+  </div>
+
+  <!-- 账户设置模态框 -->
+  <div id="account-settings-modal" class="modal hidden">
+    <div class="modal-content account-settings-modal">
+      <div class="modal-header">
+        <h3>账户设置</h3>
+        <button class="close-btn" id="close-account-settings-modal" data-tooltip="关闭" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- 基本信息区域 -->
+        <div class="basic-info-section">
+          <h4>基本信息</h4>
+          <div class="user-info-card">
+            <div class="user-avatar-container">
+              <div class="user-avatar-display">
+                <span class="user-avatar-large" id="profile-avatar-display">U</span>
+              </div>
+              <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+            </div>
+            <div class="user-details">
+              <div class="user-name" id="profile-username">Michael Mann</div>
+              <div class="user-email" id="profile-email">zongxini258@gmail.com</div>
+            </div>
+            <div class="edit-actions">
+              <button class="edit-btn" id="edit-profile-btn">
+                <svg class="edit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 安全设置区域 -->
+        <div class="security-section">
+          <h4>安全设置</h4>
+          <div class="security-row">
+            <div class="security-info">
+              <div class="security-title">登录密码</div>
+              <div class="security-subtitle">用于账户登录的密码</div>
+            </div>
+            <button class="modify-password-btn" id="modify-password-btn">修改密码</button>
+          </div>
+        </div>
+
+        <!-- 退出登录按钮 -->
+        <div class="logout-section">
+          <button class="logout-btn" id="account-logout-btn">
+            <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            退出登录
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 编辑用户信息模态框 -->
+  <div id="edit-profile-modal" class="modal hidden">
+    <div class="modal-content edit-profile-modal">
+      <div class="modal-header">
+        <h3>编辑个人信息</h3>
+        <button class="close-btn" id="close-edit-profile-modal" data-tooltip="关闭" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="edit-avatar-section">
+          <div class="avatar-preview">
+            <span class="avatar-preview-img" id="avatar-preview">U</span>
+            <button class="change-avatar-btn" id="change-avatar-btn">更换头像</button>
+          </div>
+        </div>
+        <div class="edit-username-section">
+          <label for="edit-username-input">用户名</label>
+          <input type="text" id="edit-username-input" placeholder="输入新用户名" maxlength="20">
+        </div>
+        <div class="edit-actions">
+          <button class="btn-cancel" id="cancel-profile-edit">取消</button>
+          <button class="btn-save" id="save-profile-btn">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 修改密码模态框 -->
+  <div id="change-password-modal" class="modal hidden">
+    <div class="modal-content change-password-modal">
+      <div class="modal-header">
+        <h3>修改密码</h3>
+        <button class="close-btn" id="close-change-password-modal" data-tooltip="关闭" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="password-form">
+          <div class="form-group">
+            <label for="current-password">当前密码</label>
+            <input type="password" id="current-password" placeholder="请输入当前密码">
+          </div>
+          <div class="form-group">
+            <label for="new-password">新密码</label>
+            <input type="password" id="new-password" placeholder="请输入新密码">
+          </div>
+          <div class="form-group">
+            <label for="confirm-new-password">确认新密码</label>
+            <input type="password" id="confirm-new-password" placeholder="请再次输入新密码">
+          </div>
+        </div>
+        <div class="password-actions">
+          <button class="btn-cancel" id="cancel-password-change">取消</button>
+          <button class="btn-save" id="save-password-btn">确认修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置模态框 -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-content settings-modal">
+      <div class="modal-header">
+        <h3>通用设置</h3>
+        <button class="close-btn" id="close-settings-modal" data-tooltip="关闭" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- ✅ 两列式设置内容开始 -->
+        <div class="settings-grid">
+          <!-- 左侧：分组标题 -->
+          <aside class="settings-categories" role="tablist" aria-label="设置分类">
+            <button class="settings-cat-item active" data-target="ui-panel" role="tab" aria-selected="true">界面</button>
+            <button class="settings-cat-item" data-target="playback-panel" role="tab" aria-selected="false">播放</button>
+            <button class="settings-cat-item" data-target="billing-panel" role="tab" aria-selected="false">订阅</button>
+          </aside>
+
+          <!-- 右侧：分组具体内容 -->
+          <section class="settings-panels">
+            <!-- 界面 -->
+            <div id="ui-panel" class="settings-panel">
+              <h3 class="panel-title">界面</h3>
+
+              <div class="setting-item">
+                <div class="setting-item-left">
+                  <div class="setting-label">主题模式</div>
+                  <div class="setting-desc">选择你偏好的界面主题</div>
+                </div>
+                <div class="setting-item-right">
+                  <select id="theme-select" class="setting-select">
+                    <option value="system">跟随系统</option>
+                    <option value="light">浅色</option>
+                    <option value="dark">深色</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-item-left">
+                  <div class="setting-label">侧边栏状态</div>
+                  <div class="setting-desc">设置侧边栏的默认展开状态</div>
+                </div>
+                <div class="setting-item-right">
+                  <select id="sidebar-select" class="setting-select">
+                    <option value="expanded">默认展开</option>
+                    <option value="collapsed">默认收起</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- 界面设置保存按钮 -->
+              <div class="panel-footer">
+                <button id="save-ui-settings" class="btn-primary">保存设置</button>
+              </div>
+            </div>
+
+            <!-- 播放 -->
+            <div id="playback-panel" class="settings-panel hidden">
+              <h3 class="panel-title">播放</h3>
+
+              <div class="setting-item">
+                <div class="setting-item-left">
+                  <div class="setting-label">自动播放</div>
+                  <div class="setting-desc">生成完成后自动开始播放</div>
+                </div>
+                <div class="setting-item-right">
+                  <label class="switch">
+                    <input type="checkbox" id="auto-play-toggle" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-item-left">
+                  <div class="setting-label">默认音量</div>
+                  <div class="setting-desc">设置播放器的默认音量</div>
+                </div>
+                <div class="setting-item-right">
+                  <input id="default-volume" type="range" min="0" max="100" step="1" />
+                  <span id="default-volume-value" class="range-value">100%</span>
+                </div>
+              </div>
+              
+              <!-- 播放设置保存按钮 -->
+              <div class="panel-footer">
+                <button id="save-playback-settings" class="btn-primary">保存设置</button>
+              </div>
+            </div>
+
+            <!-- 订阅 -->
+            <div id="billing-panel" class="settings-panel hidden">
+              <h3 class="panel-title">订阅</h3>
+
+              <div class="subscription-card">
+                <div class="sub-left">
+                  <div class="sub-plan">
+                    <span id="settings-plan-label" class="badge">免费版</span>
+                  </div>
+                  <div class="sub-credits">
+                    当前积分：<strong id="settings-credit-balance">--</strong>
+                    <button id="settings-buy-credits" class="btn-secondary btn-xs">充值</button>
+                  </div>
+                  <div class="sub-note">超过免费额度后可升级或购买积分包。</div>
+                </div>
+                <div class="sub-right">
+                  <button id="settings-upgrade-btn" class="btn-primary">升级</button>
+                </div>
+              </div>
+              
+              <!-- 管理订阅按钮行：仅对 lite/pro 展示；默认隐藏 -->
+              <div id="settings-manage-subscription-row" class="plan-notes" style="display:none; margin-top:16px; text-align:center;">
+                <button id="settings-btn-manage-subscription" class="btn btn-secondary">
+                  管理订阅
+                </button>
+              </div>
+              
+            </div>
+          </section>
+        </div>
+
+                <!-- ✅ 两列式设置内容结束 -->
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 密码设置/修改模态框 -->
+  <div id="password-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="password-modal-title">设置密码</h3>
+        <button class="close-btn" id="close-password-modal" data-tooltip="关闭" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="password-form">
+          <!-- 身份验证区域 -->
+          <div id="auth-section">
+            <div class="form-group">
+              <label>身份验证</label>
+              <div class="auth-options">
+                <label class="radio-option">
+                  <input type="radio" name="auth-method" value="otp" checked>
+                  <span>使用验证码验证</span>
+                </label>
+                <label class="radio-option" id="current-password-option" style="display: none;">
+                  <input type="radio" name="auth-method" value="current">
+                  <span>使用当前密码</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- 当前密码输入 -->
+            <div id="current-password-section" style="display: none;">
+              <div class="form-group">
+                <label for="current-password-input">当前密码</label>
+                <input type="password" id="current-password-input" placeholder="输入当前密码">
+              </div>
+            </div>
+            
+            <!-- 验证码输入 -->
+            <div id="otp-section">
+              <div class="form-group">
+                <label for="password-otp-input">验证码</label>
+                <div class="otp-input-group">
+                  <input type="text" id="password-otp-input" placeholder="输入6位验证码" maxlength="6">
+                  <button type="button" id="get-password-otp-btn" class="btn-secondary">获取验证码</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 新密码输入 -->
+          <div class="form-group">
+            <label for="new-password-input">新密码</label>
+            <input type="password" id="new-password-input" placeholder="至少8位密码">
+          </div>
+          
+          <div class="form-group">
+            <label for="confirm-password-input">确认密码</label>
+            <input type="password" id="confirm-password-input" placeholder="再次输入新密码">
+          </div>
+          
+          <div class="form-actions-dual">
+            <button class="btn-secondary" id="close-password-modal-secondary">取消</button>
+            <button class="btn-primary" id="save-password-btn">保存密码</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加新音色模态框 -->
+  <div id="add-voice-modal" class="modal hidden">
+    <div class="modal-content add-voice-modal">
+      <div class="modal-header">
+        <h3>添加新音色</h3>
+        <button class="close-btn" id="close-add-voice-modal" data-tooltip="关闭" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="voice-form">
+          <!-- 模式提示 -->
+          <div class="mode-hint" id="mode-hint">
+            <span class="hint-icon">💡</span>
+            <span class="hint-text">请根据当前模式上传对应类型的音频</span>
+          </div>
+          
+          <div class="form-group">
+            <label for="add-voice-name-input">音色名称</label>
+            <input type="text" id="add-voice-name-input" placeholder="例如：播音员" />
+          </div>
+          <div class="form-group">
+            <label for="add-voice-description-input">音色备注 (可选)</label>
+            <input type="text" id="add-voice-description-input" placeholder="例如：沉稳男声，用于讲故事" />
+          </div>
+          
+          <div class="form-group">
+            <label for="add-reference-text-input">参考文本内容</label>
+            <textarea id="add-reference-text-input" placeholder="请输入参考音频对应的文本内容"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="add-reference-audio-input">上传参考音频</label>
+            <div class="audio-upload-area">
+              <input type="file" id="add-reference-audio-input" accept="audio/*" />
+              <div class="audio-upload-hint">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4v12m0 0-4-4m4 4 4-4m-4 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p>点击或拖拽文件到此区域</p>
+                <p class="audio-subtitle">支持 MP3, WAV, FLAC；推荐片段时长 15–30 秒，清晰无遮挡</p>
+              </div>
+            </div>
+            <!-- 文件上传反馈 -->
+            <p id="file-name-display" class="file-name-display"></p>
+          </div>
+          
+          <div class="form-actions-dual">
+            <button class="btn-secondary" id="close-add-voice-modal-secondary">取消</button>
+            <button class="btn-primary" id="save-voice-btn">保存音色</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- 全局悬浮播放器 -->
+  <div id="global-player" class="hidden">
+    
+    <img id="gp-thumbnail" class="player-thumbnail" src="" alt="Track Thumbnail">
+
+    <div id="gp-info-container">
+        <div id="gp-title" class="player-title">产品人永恒阅读库：五篇经典文章的职业智慧</div>
+        <div class="gp-progress-wrapper">
+            <span class="player-time current-time">0:00</span>
+            <div class="player-progress-bar">
+                <div class="progress-bar-inner"></div>
+            </div>
+            <span class="player-time total-time">0:00</span>
+        </div>
+    </div>
+
+    <div class="player-main-controls">
+      <button class="player-btn prev-btn" id="gp-prev-btn" data-tooltip="上一首" aria-label="上一首">
+        <svg t="1755500488880" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1053" width="24" height="24"><path d="M256 224a32 32 0 0 1 32 32v512a32 32 0 0 1-64 0V256a32 32 0 0 1 32-32z m385.952 30.624a96 96 0 0 1 157.44 73.76v366.72a96 96 0 0 1-157.44 73.76l-220.032-183.36a96 96 0 0 1 0-147.52z m86.048 53.28a32 32 0 0 0-45.056-4.096l-220.032 183.36a32 32 0 0 0-4.096 4.096l-2.4 3.232a32 32 0 0 0 6.496 41.824l220.032 183.36a32 32 0 0 0 52.48-24.576v-366.72a32 32 0 0 0-7.424-20.48z" fill="#000000" p-id="1054"></path></svg>
+      </button>
+      
+      <button class="player-btn play-pause-btn" id="gp-play-pause-btn" data-tooltip="播放/暂停" aria-label="播放或暂停">
+        <svg class="icon-media icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        <svg class="icon-media icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+      </button>
+      
+      <button class="player-btn next-btn" id="gp-next-btn" data-tooltip="下一首" aria-label="下一首">
+        <svg t="1755500506889" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1215" width="24" height="24"><path d="M768 224a32 32 0 0 1 32 32v512a32 32 0 0 1-64 0V256a32 32 0 0 1 32-32z m-386.336 31.36l220.032 183.36a96 96 0 0 1 0 147.52l-220.032 183.36a96 96 0 0 1-157.44-73.76v-366.72a96 96 0 0 1 157.44-73.76zM295.616 308.64a32 32 0 0 0-7.424 20.48v366.72a32 32 0 0 0 52.48 24.576l220.032-183.36a32 32 0 0 0 6.496-41.824l-2.4-3.264a32 32 0 0 0-4.096-4.096l-220.032-183.36a32 32 0 0 0-45.056 4.128z" fill="#000000" p-id="1216"></path></svg>
+      </button>
+    </div>
+  
+    <div class="player-right-controls">
+      <div class="volume-control-wrapper">
+        <button class="player-btn volume-btn" id="player-volume-btn" data-tooltip="音量" aria-label="音量">
+          <svg t="1755501184660" class="icon" id="volume-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3305" width="24" height="24"><path d="M581.5 221.5c-11.3-7.6-25.7-9.1-38.3-3.9L278.8 340.9H169c-22.6 0-41 18.4-41 41v260.4c0 22.6 18.4 41 41 41h109.8L542.1 806l1.2 0.5c5 2 10.2 3 15.5 3 8 0 16-2.4 22.8-7a40.92 40.92 0 0 0 18.1-34v-513c-0.1-13.7-6.8-26.4-18.2-34zM549 753.4L297.6 636l-1.1-0.5c-4.9-2-10.1-3-15.5-3H178.6v-241H281c5.3 0 10.5-1 15.5-3L549 270.6v482.8zM708 357.9c-9.9-9.9-25.9-9.9-35.8 0-9.9 9.9-9.9 25.9 0 35.8 63.2 63.2 63.2 166.2 0 229.4-9.9 9.9-9.9 25.9 0 35.8 4.9 4.9 11.4 7.4 17.9 7.4s13-2.5 17.9-7.4c82.9-83 82.9-218 0-301z" fill="#515151" p-id="3306"></path><path d="M796.8 268.5c-9.9-9.9-25.9-9.9-35.8 0-9.9 9.9-9.9 25.9 0 35.8 112.5 112.5 112.5 295.6 0 408.2-9.9 9.9-9.9 25.9 0 35.8 4.9 4.9 11.4 7.4 17.9 7.4s13-2.5 17.9-7.4c132.3-132.3 132.3-347.5 0-479.8z" fill="#515151" p-id="3307"></path></svg>
+        </button>
+        <div id="volume-popover" class="volume-popover" role="dialog" aria-modal="true" aria-label="音量调节">
+          <input id="volume-slider" class="volume-slider" type="range" min="0" max="1" step="0.01" value="1" orient="vertical" />
+        </div>
+      </div>
+
+      <div class="player-more-options">
+        <button class="player-btn more-options-btn" id="gp-more-options-btn" data-tooltip="更多选项" aria-label="更多选项">
+          <svg t="1755501303746" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1379" width="24" height="24"><path d="M256 448a64 64 0 1 1 0 128 64 64 0 0 1 0-128z m256 0a64 64 0 1 1 0 128 64 64 0 0 1 0-128z m256 0a64 64 0 1 1 0 128 64 64 0 0 1 0-128z" fill="#515151" p-id="1380"></path></svg>
+        </button>
+        <div class="more-options-menu hidden">
+          <div class="menu-item has-submenu" id="gp-playlist-menu-container">
+            <svg t="1755600068359" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="28169" width="20" height="20"><path d="M841.813333 149.333333h-133.76c-18.133333 0-30.293333 12.16-30.293333 30.293334v449.493333c-18.133333-12.16-42.453333-18.133333-66.773333-18.133333-72.96 0-133.76 60.8-133.76 133.76 0 72.96 60.8 133.76 133.76 133.76 72.96 0 133.76-60.8 133.76-127.573334V216.106667h97.28c18.133333 0 30.293333-12.16 30.293333-30.293334C878.293333 161.493333 860.16 149.333333 842.026667 149.333333h-0.213334zM610.986667 811.52c-36.48 0-66.773333-30.293333-66.773334-66.773333s30.293333-66.773333 66.773334-66.773334 66.773333 30.293333 66.773333 66.773334c5.973333 36.48-24.32 66.773333-66.773333 66.773333z" p-id="28170" fill="#2c2c2c"></path><path d="M149.333333 280.746667m32 0l362.666667 0q32 0 32 32l0 0q0 32-32 32l-362.666667 0q-32 0-32-32l0 0q0-32 32-32Z" p-id="28171" fill="#2c2c2c"></path><path d="M149.333333 445.653333m32 0l362.666667 0q32 0 32 32l0 0q0 32-32 32l-362.666667 0q-32 0-32-32l0 0q0-32 32-32Z" p-id="28172" fill="#2c2c2c"></path><path d="M149.333333 610.56m32 0l210.773334 0q32 0 32 32l0 0q0 32-32 32l-210.773334 0q-32 0-32-32l0 0q0-32 32-32Z" p-id="28173" fill="#2c2c2c"></path></svg>
+            <span>列表</span>
+            <div id="playlist-panel">
+              <div class="playlist-header">
+                <h3>播放列表</h3>
+                <button id="close-playlist-panel" class="close-btn" data-tooltip="关闭">&times;</button>
+              </div>
+              <ul id="playlist-list-content">
+              </ul>
+            </div>
+          </div>
+          <div class="menu-item has-submenu" id="gp-speed-menu-container">
+            <svg t="1755599647301" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13791" width="20" height="20"><path d="M780.288 812.544c1.024-1.024 2.048-2.56 3.584-3.584 71.68-71.168 112.128-167.936 112.128-268.8 0-211.968-172.032-384-384-384s-384 172.032-384 384c0 100.864 40.448 197.632 112.128 268.8l-45.056 45.056C20.992 681.472 20.48 400.384 193.536 226.816 277.504 141.824 392.704 94.72 512 95.744c246.272 0 445.952 198.656 448 444.416 0 118.272-47.616 231.424-131.584 314.368" fill="#808080" p-id="13792"></path><path d="M173.568 577.536H113.664c-16.384 0-30.208-13.312-30.208-30.208s13.312-30.208 30.208-30.208h59.904M843.264 517.632h59.904c16.384 0 30.208 13.312 30.208 30.208s-13.312 30.208-30.208 30.208h-59.904M242.176 329.728l-30.208-30.208c-11.776-11.776-11.776-30.72 0-42.496s30.72-11.776 42.496 0l30.208 30.208M721.92 276.992l30.208-30.208c11.776-11.776 30.72-11.776 42.496 0s11.776 30.72 0 42.496l-30.208 30.208M261.632 787.968l-30.208 30.208c-11.776 11.776-30.72 11.776-42.496 0s-11.776-30.72 0-42.496l30.208-30.208M473.088 207.872V147.968c0-16.384 13.312-30.208 30.208-30.208s30.208 13.312 30.208 30.208v59.904M799.232 749.568l32.256 27.648c12.8 10.752 13.824 29.696 3.072 42.496-10.752 12.8-29.696 13.824-42.496 3.072l-32.256-27.648M435.8144 681.6256c-6.2976 32.8192 16.1792 63.3856 47.9744 66.4576 1.1264 0.1024 1.2288 0.1536 2.0992 0.1536 55.1424-2.304 61.952-71.5264 61.952-71.5264l56.2688-357.2224-154.2144 317.696c-9.5232 23.6032-11.1616 28.416-14.0288 43.9808v0.4608z" fill="#2c2c2c" p-id="13793"></path></svg>
+            <span>倍速</span>
+            <div class="speed-submenu">
+              <button class="submenu-item" data-speed="1">1.0x</button>
+              <button class="submenu-item" data-speed="1.25">1.25x</button>
+              <button class="submenu-item" data-speed="1.5">1.5x</button>
+              <button class="submenu-item" data-speed="1.75">1.75x</button>
+              <button class="submenu-item" data-speed="2">2.0x</button>
+            </div>
+          </div>
+          <button class="menu-item" id="gp-download-btn">
+            <svg t="1755599942751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="21132" width="20" height="20"><path d="M857.6 956.8H166.4c-54.4 0-102.4-48-102.4-105.6v-182.4c0-19.2 12.8-32 32-32s32 12.8 32 32v182.4c0 22.4 16 41.6 38.4 41.6h694.4c19.2 0 38.4-19.2 38.4-41.6v-182.4c0-19.2 12.8-32 32-32s32 12.8 32 32v182.4c-3.2 57.6-48 105.6-105.6 105.6z" fill="#2c2c2c" p-id="21133"></path><path d="M512 758.4c-19.2 0-32-12.8-32-32v-640c0-19.2 12.8-32 32-32s32 12.8 32 32v640c0 16-12.8 32-32 32z" fill="#2c2c2c" p-id="21134"></path><path d="M512 764.8c-9.6 0-16-3.2-22.4-9.6l-208-208c-12.8-12.8-12.8-32 0-44.8s32-12.8 44.8 0l185.6 185.6 185.6-185.6c12.8-12.8 32-12.8 44.8 0s12.8 32 0 44.8l-208 208c-6.4 6.4-12.8 9.6-22.4 9.6z" fill="#2c2c2c" p-id="21135"></path></svg>
+            <span>下载</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Billing / Credits Modal -->
+  <div id="billing-modal" class="modal billing-modal" aria-hidden="true">
+    <div class="modal-content billing-xl">
+      <div class="modal-header">
+        <h3>订阅与积分</h3>
+        <button class="close" id="billing-close" aria-label="关闭">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 钱包概览 -->
+        <div class="wallet-row">
+          <div class="wallet-balance">
+            <span class="wallet-label">当前积分</span>
+            <span class="wallet-value" id="wallet-credits">0</span>
+          </div>
+          <div class="wallet-actions">
+            <button class="btn btn-secondary" id="btn-recharge">购买积分包</button>
+          </div>
+        </div>
+
+        <!-- 订阅卡片 -->
+        <div class="plan-grid">
+          <!-- Lite -->
+          <div class="plan-card" data-plan="lite">
+            <div class="plan-head">
+              <div class="plan-name">专业版</div>
+              <div class="plan-price"><span class="cur">$</span>9<span class="per">/月</span></div>
+            </div>
+            <ul class="plan-feats">
+              <li>每月 <b>1000</b> 积分</li>
+              <li>可定制自己的音色</li>
+              <li>AI 播客生成</li>
+              <li>脚本编辑</li>
+            </ul>
+            <button class="btn btn-dark plan-cta" data-plan="lite">升级至专业版</button>
+          </div>
+
+          <!-- Pro -->
+          <div class="plan-card popular" data-plan="pro">
+            <div class="plan-badge">最受欢迎</div>
+            <div class="plan-head">
+              <div class="plan-name">高级版</div>
+              <div class="plan-price"><span class="cur">$</span>19<span class="per">/月</span></div>
+            </div>
+            <ul class="plan-feats">
+              <li>每月 <b>3000</b> 积分</li>
+              <li>可定制自己的音色</li>
+              <li>AI 播客生成</li>
+              <li>音频下载</li>
+            </ul>
+            <button class="btn btn-dark plan-cta" data-plan="pro">升级至高级版</button>
+          </div>
+        </div>
+
+        <!-- 管理/取消订阅（已订阅时显示） -->
+        <div class="plan-notes" id="manage-subscription-row" style="display:none; margin-top:16px;">
+          <button class="btn btn-secondary" id="btn-manage-subscription">管理订阅</button>
+        </div>
+
+        <!-- 说明 -->
+        <div class="plan-notes">
+          免费版含 <b>50</b> 积分；生成一次播客消耗 <b>10</b> 积分。超过后请订阅或购买积分包。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 帮助中心 -->
+  <div id="help-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="help-title">帮助中心</h3>
+        <button class="close-btn" data-close-modal="help-modal" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>创作流程</h4>
+        <ol>
+          <li>在顶部输入框粘贴文本、PDF或链接；</li>
+          <li>选择模型与音色；</li>
+          <li>点击"创作"，生成播客脚本内容；</li>
+          <li>点击“播客”，合成音频文件。</li>
+          <li>作品卡片卡片右下角 "···" 可下载、删除或更多操作。点击标题，查看音频详细内容</li>
+          <li>点击卡片上的标题，查看音频详细内容</li>
+        </ol>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- 反馈 -->
+  <div id="feedback-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="feedback-title">提交反馈</h3>
+        <button class="close-btn" data-close-modal="feedback-modal" aria-label="关闭">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="feedback-form">
+          <div class="form-group">
+            <label>你的反馈</label>
+            <textarea name="message" rows="6" placeholder="描述你遇到的问题或建议…" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>联系邮箱（可选）</label>
+            <input type="email" name="email" placeholder="便于我们与你联系（可选）" />
+          </div>
+          <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button type="button" class="btn-secondary" data-close-modal="feedback-modal">取消</button>
+            <button type="submit" class="btn-primary">提交</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
+
+

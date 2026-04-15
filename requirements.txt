@@ -14,6 +14,17 @@ soundfile==0.13.1
 gradio==6.5.1
 pybase64
 requests
+accelerate>=0.20.0
+huggingface_hub
+PyPDF2
+beautifulsoup4
+PyMuPDF
+openai
+google-generativeai
+pydub
+mutagen
+# liger_kernel  # 可选优化依赖，要求 Triton，在 Windows/CPU 环境下易冲突，默认禁用
+# flash-attn    # Need to install separately
 
 # flash-attn build/runtime deps
 psutil
@@ -21,4 +32,11 @@ packaging
 ninja
 setuptools
 wheel
-#flash_attn
+
+# --- Flask web 应用依赖 ---
+Flask==3.0.3
+Flask-Cors==4.0.1
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+Flask-Login==0.6.3
+Werkzeug==3.0.1

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - PodifyAI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1 class="auth-title">创建 PodifyAI 账户</h1>
+            
+            <!-- 验证码注册（默认显示） -->
+            <div id="otp-register-section">
+                <form id="otp-register-form">
+                    <div class="form-group">
+                        <label for="register-target">邮箱</label>
+                        <input type="text" id="register-target" name="target" placeholder="输入邮箱" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-code">验证码</label>
+                        <div class="code-input-group">
+                            <input type="text" id="register-code" name="code" placeholder="输入6位验证码" maxlength="6" required>
+                            <button type="button" id="get-register-code-btn" class="code-btn">获取验证码</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">设置密码</label>
+                        <input type="password" id="register-password" name="password" placeholder="输入密码">
+                        <small class="form-hint">填写至少8位密码（可选，留空则仅使用验证码登录）</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">确认密码</label>
+                        <input type="password" id="register-password-confirm" name="password_confirm" placeholder="再次输入密码">
+                        <small class="form-hint">请确保两次输入一致</small>
+                    </div>
+                    <button type="submit" class="auth-button">立即注册</button>
+                </form>
+            </div>
+
+
+
+            <p class="auth-switch">已有账户？ <a href="/login">直接登录</a></p>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
+    <script src="/static/auth.js"></script>
+</body>
+</html>

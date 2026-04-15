@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - PodifyAI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1 class="auth-title">登录 PodifyAI</h1>
+            
+            <!-- 登录方式切换 Tab -->
+            <div class="login-tabs" id="login-tabs">
+                <button type="button" class="tab-btn active" data-tab="otp">验证码登录</button>
+                <button type="button" class="tab-btn" data-tab="password" id="password-tab-btn">密码登录</button>
+            </div>
+            
+            <!-- 验证码登录（默认显示） -->
+            <div id="otp-login-section" class="tab-content active">
+                <form id="otp-login-form">
+                    <div class="form-group">
+                        <label for="login-target">邮箱</label>
+                        <input type="text" id="login-target" name="target" placeholder="输入邮箱" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-code">验证码</label>
+                        <div class="code-input-group">
+                            <input type="text" id="login-code" name="code" placeholder="输入6位验证码" maxlength="6" required>
+                            <button type="button" id="get-login-code-btn" class="code-btn">获取验证码</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-button">立即登录</button>
+                </form>
+            </div>
+
+            <!-- 密码登录 -->
+            <div id="password-login-section" class="tab-content">
+                <form id="password-login-form">
+                    <div class="form-group">
+                        <label for="password-email">邮箱</label>
+                        <input type="email" id="password-email" name="email" placeholder="输入邮箱" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password-password">密码</label>
+                        <div class="password-input-group">
+                            <input type="password" id="password-password" name="password" placeholder="输入密码" required>
+                            <button type="button" id="toggle-password-visibility" class="toggle-password-btn">👁</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="auth-button">使用密码登录</button>
+                        <div class="forgot-password-link">
+                            <a href="#" id="forgot-password-btn">忘记密码？</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 传统登录（折叠） -->
+            <div id="legacy-login-section" class="legacy-section" style="display: none;">
+                <form id="legacy-login-form">
+                    <div class="form-group">
+                        <label for="legacy-username">用户名</label>
+                        <input type="text" id="legacy-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="legacy-password">密码</label>
+                        <input type="password" id="legacy-password" name="password" placeholder="输入密码" required>
+                    </div>
+                    <button type="submit" class="auth-button">登录</button>
+                </form>
+            </div>
+
+            <!-- 切换登录方式 -->
+            <div class="auth-switch-methods" id="legacy-login-toggle" style="display: none;">
+                <a href="#" id="toggle-login-method" class="method-toggle">使用用户名密码登录</a>
+            </div>
+
+            <p class="auth-switch">还没有账户？ <a href="/register">立即注册</a></p>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
+    
+    <!-- 忘记密码弹窗 -->
+    <div id="forgot-password-modal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>重置密码</h3>
+                <span class="close" id="close-forgot-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- 步骤1：输入邮箱 -->
+                <div id="forgot-step1">
+                    <div class="form-group">
+                        <label for="forgot-email">邮箱地址</label>
+                        <input type="email" id="forgot-email" placeholder="输入您的邮箱地址" required>
+                    </div>
+                    <button type="button" id="send-forgot-code-btn" class="auth-button">发送验证码</button>
+                </div>
+                
+                <!-- 步骤2：输入验证码和新密码 -->
+                <div id="forgot-step2" style="display: none;">
+                    <div class="form-group">
+                        <label for="forgot-code">验证码</label>
+                        <input type="text" id="forgot-code" placeholder="输入6位验证码" maxlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="forgot-new-password">新密码</label>
+                        <input type="password" id="forgot-new-password" placeholder="至少8位密码" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="forgot-confirm-password">确认密码</label>
+                        <input type="password" id="forgot-confirm-password" placeholder="再次输入新密码" required>
+                    </div>
+                    <button type="button" id="reset-password-btn" class="auth-button">重置密码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/auth.js"></script>
+</body>
+</html>
