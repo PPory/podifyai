@@ -1,0 +1,2 @@
+-r requirements-web.txt
+gunicorn>=22.0.0,<24.0.0

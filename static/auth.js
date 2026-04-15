@@ -667,26 +667,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         passwordTabBtn.style.display = 'none';
                     }
                 }
-            }
-            
-            // 尝试传统登录检查是否被禁用
-            const testResponse = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: '__test__', password: '__test__' })
-            });
 
-            const legacyToggle = document.getElementById('legacy-login-toggle');
-            
-            if (testResponse.status === 403) {
-                // 传统登录被禁用，隐藏切换选项
+                const legacyToggle = document.getElementById('legacy-login-toggle');
                 if (legacyToggle) {
-                    legacyToggle.style.display = 'none';
-                }
-            } else {
-                // 传统登录可用，显示切换选项
-                if (legacyToggle) {
-                    legacyToggle.style.display = 'block';
+                    legacyToggle.style.display = statusData.allow_legacy_password_login === false ? 'none' : 'block';
                 }
             }
         } catch (error) {
@@ -699,3 +683,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+

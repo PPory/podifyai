@@ -16,6 +16,7 @@ voice_previews/
 history_audio/
 pdf_storage/
 temp_uploads/
+XY_Tokenizer/weights/
 
 # 运行时 / 调试文件
 debug_last_tts.wav
@@ -25,6 +26,11 @@ diag_*.wav
 __pycache__/
 *.pyc
 *.pyo
+*.log
+.tmp_*
+.git_head_script.tmp
+.chrome-headless/
+.venv/
 
 # Claude 内部文件
 .claude/

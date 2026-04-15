@@ -1,0 +1,17 @@
+[Unit]
+Description=PodifyAI Web App
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/opt/podifyai
+EnvironmentFile=/opt/podifyai/.env.local
+ExecStart=/opt/podifyai/deploy/ec2/start.sh
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

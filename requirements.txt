@@ -1,42 +1,10 @@
-torch==2.9.1+cu128
-torchaudio==2.9.1+cu128
-transformers==5.0.0
-safetensors==0.6.2
-numpy==2.1.0
-orjson==3.11.4
-tqdm==4.67.1
-PyYAML==6.0.3
-einops==0.8.1
-scipy==1.16.2
-librosa==0.11.0
-tiktoken==0.12.0
-soundfile==0.13.1
-gradio==6.5.1
-pybase64
-requests
-accelerate>=0.20.0
-huggingface_hub
-PyPDF2
-beautifulsoup4
-PyMuPDF
-openai
-google-generativeai
-pydub
-mutagen
-# liger_kernel  # 可选优化依赖，要求 Triton，在 Windows/CPU 环境下易冲突，默认禁用
-# flash-attn    # Need to install separately
+# PodifyAI — full dependency list (web app + local TTS model)
+#
+# For web-app-only deployment (no local GPU inference):
+#   pip install -r requirements-web.txt
+#
+# For full local inference + web app:
+#   pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu128
 
-# flash-attn build/runtime deps
-psutil
-packaging
-ninja
-setuptools
-wheel
-
-# --- Flask web 应用依赖 ---
-Flask==3.0.3
-Flask-Cors==4.0.1
-Flask-SQLAlchemy==3.1.1
-Flask-Migrate==4.0.5
-Flask-Login==0.6.3
-Werkzeug==3.0.1
+-r requirements-web.txt
+-r requirements-model.txt

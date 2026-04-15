@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR=${APP_DIR:-/opt/podifyai}
+BRANCH=${BRANCH:-main}
+SERVICE_NAME=${SERVICE_NAME:-podifyai}
+
+cd "$APP_DIR"
+
+git fetch origin "$BRANCH"
+git checkout "$BRANCH"
+git pull --ff-only origin "$BRANCH"
+
+source .venv/bin/activate
+pip install -r requirements-ec2.txt
+python -m unittest discover -s tests -v
+
+sudo systemctl restart "$SERVICE_NAME"
+sudo systemctl status "$SERVICE_NAME" --no-pager
+
