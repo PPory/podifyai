@@ -6,7 +6,7 @@ PodifyAI 是一个面向内容创作的 AI 播客 Web 应用。它把 URL、PDF 
 
 - 当前 GitHub 仓库的主要交付对象是 PodifyAI Web 应用，不再是原始的 MOSS-TTSD 模型说明页。
 - 仓库里仍保留部分模型相关文件，方便兼容、研究或本地实验。
-- 如果你只是部署 Web 产品，优先关注 `requirements-web.txt`、`requirements-ec2.txt`、`EC2_DEPLOY.md` 和 `deploy/`。
+- 如果你只是部署 Web 产品，优先关注 `requirements-web.txt`、`requirements-ec2.txt`、`VPS_DEPLOY_RUNBOOK.md` 和 `deploy/`。
 
 ## 主要能力
 
@@ -117,20 +117,18 @@ node --check static/player.js
 
 ## 生产部署
 
-EC2 部署入口：
+部署文档已经按分工整理成三层：
 
-- `EC2_DEPLOY.md`
-- `deploy/ec2/README.md`
-- `deploy/ec2/start.sh`
-- `deploy/ec2/podifyai.service.example`
-- `deploy/nginx/podifyai.conf.example`
+- `VPS_DEPLOY_RUNBOOK.md`：主手册，包含完整部署、HTTPS、日常更新和排障
+- `EC2_DEPLOY.md`：快速部署清单，只保留最短操作路径
+- `deploy/ec2/README.md`：部署目录说明，解释各个脚本和模板的用途
 
 如果你是在 Linux 服务器上直接部署，安装依赖时使用 `requirements-ec2.txt`。
 
 ## 依赖说明
 
 - `requirements-web.txt`：Web 应用运行依赖
-- `requirements-ec2.txt`：EC2 部署最小依赖
+- `requirements-ec2.txt`：EC2 / VPS 部署最小依赖
 - `requirements-model.txt`：模型 / 本地推理相关依赖
 - `requirements.txt`：当前项目总依赖集合
 
@@ -144,6 +142,8 @@ EC2 部署入口：
 - `SENDGRID_INTEGRATION_README.md`：邮件发送说明
 - `DATABASE_SETUP_README.md`：数据库初始化说明
 - `VPS_DEPLOY_RUNBOOK.md`：VPS / EC2 全流程部署与排障手册
+- `EC2_DEPLOY.md`：EC2 快速部署清单
+- `deploy/ec2/README.md`：部署文件说明
 
 ## 备注
 

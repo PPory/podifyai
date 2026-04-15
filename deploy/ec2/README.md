@@ -1,120 +1,133 @@
-# EC2 部署说明
+# deploy/ec2 目录说明
 
-适用场景：单台 AWS EC2，Flask + Gunicorn + Nginx，数据保存在当前机器本地。
+这份文档只解释 `deploy/ec2/` 目录里的文件用途。
 
-## 1. 准备机器
+如果你要看完整部署流程、域名、HTTPS、排障和日常更新，请直接看：
+- `VPS_DEPLOY_RUNBOOK.md`
 
-推荐 Ubuntu 22.04 或 24.04。
+如果你只想快速照着命令部署，请看：
+- `EC2_DEPLOY.md`
 
-```bash
-sudo apt update
-sudo apt install -y git nginx ffmpeg python3 python3-venv python3-pip
-```
+## 目录内文件分工
 
-## 2. 拉代码并创建环境
+### `start.sh`
 
-```bash
-sudo mkdir -p /opt/podifyai
-sudo chown $USER:$USER /opt/podifyai
-cd /opt/podifyai
+用途：
+- 启动 Gunicorn
+- 作为 systemd 的 `ExecStart`
 
-git clone <你的 GitHub 仓库地址> .
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements-ec2.txt
-```
+默认行为：
+- 自动定位项目根目录
+- 使用 `/opt/podifyai/.venv/bin/gunicorn`
+- 读取 `gunicorn.conf.py`
+- 启动 `wsgi:app`
 
-## 3. 配置环境变量
-
-```bash
-cp .env.local.example .env.local
-```
-
-至少确认这些值已经填好：
-- `SECRET_KEY`
-- `ALLOWED_ORIGINS`
-- `OPENAI_API_KEY`
-- `SILICONFLOW_API_KEY`
-- `SENDGRID_*` 或 SMTP 配置
-- `STRIPE_*`
-
-如果当前域名还没接好，先把 `SESSION_COOKIE_SECURE=false` 留着；正式切 HTTPS 后删除这一行。
-
-## 4. 先跑自检
-
-```bash
-source .venv/bin/activate
-python -m py_compile app.py auth.py billing.py content.py decorators.py extensions.py history.py models.py services.py static_routes.py tts.py voices.py wsgi.py gunicorn.conf.py
-python -m unittest discover -s tests -v
-```
-
-## 5. 先本地试跑 Gunicorn
+典型用法：
 
 ```bash
 chmod +x deploy/ec2/start.sh
 ./deploy/ec2/start.sh
 ```
 
-Gunicorn 监听地址由 `gunicorn.conf.py` 控制，默认是 `127.0.0.1:8000`。
+### `update.sh.example`
 
-## 6. 配置 systemd
+用途：
+- 作为更新脚本模板
+- 适合服务器本地已经是 Git 仓库的情况
 
-把示例文件复制到系统目录后，按你的实际路径修改：
+默认做的事：
+- 拉取最新代码
+- 安装 `requirements-ec2.txt`
+- 跑测试
+- 重启 `podifyai` 服务
+
+典型用法：
 
 ```bash
-sudo cp deploy/ec2/podifyai.service.example /etc/systemd/system/podifyai.service
-sudo nano /etc/systemd/system/podifyai.service
+cp deploy/ec2/update.sh.example deploy/ec2/update.sh
+chmod +x deploy/ec2/update.sh
+./deploy/ec2/update.sh
 ```
 
-需要改的通常只有：
+### `podifyai.service.example`
+
+用途：
+- systemd 服务模板
+- 让 PodifyAI 支持后台运行和开机自启
+
+你通常只需要核对：
 - `User`
 - `Group`
 - `WorkingDirectory`
 - `EnvironmentFile`
 - `ExecStart`
 
-然后启动：
+典型用法：
 
 ```bash
+sudo cp deploy/ec2/podifyai.service.example /etc/systemd/system/podifyai.service
+sudo nano /etc/systemd/system/podifyai.service
 sudo systemctl daemon-reload
 sudo systemctl enable podifyai
 sudo systemctl start podifyai
-sudo systemctl status podifyai --no-pager
 ```
 
-## 7. 配置 Nginx
+## 推荐搭配方式
+
+完整部署时，建议按这个关系理解：
+- `VPS_DEPLOY_RUNBOOK.md`：主手册
+- `EC2_DEPLOY.md`：最短路径清单
+- `deploy/ec2/start.sh`：启动脚本
+- `deploy/ec2/update.sh.example`：更新脚本模板
+- `deploy/ec2/podifyai.service.example`：systemd 模板
+- `deploy/nginx/podifyai.conf.example`：Nginx 模板
+
+## 使用提醒
+
+### 1. shell 脚本必须用 LF 换行
+
+如果日志里出现：
+
+```text
+/usr/bin/env: 'bash\r': No such file or directory
+```
+
+说明脚本是 Windows 换行。
+
+可临时修复：
 
 ```bash
-sudo cp deploy/nginx/podifyai.conf.example /etc/nginx/sites-available/podifyai
-sudo nano /etc/nginx/sites-available/podifyai
-sudo ln -s /etc/nginx/sites-available/podifyai /etc/nginx/sites-enabled/podifyai
-sudo nginx -t
-sudo systemctl restart nginx
+sed -i 's/\r$//' deploy/ec2/start.sh deploy/ec2/update.sh.example
 ```
 
-如果你已经有域名，再接上 HTTPS 证书。
+仓库里已经通过 `.gitattributes` 约束这些文件使用 LF。
 
-## 8. 后续从 GitHub 更新
+### 2. 不要把 API key 写进脚本里
+
+正确做法：
+- API key 只放 `.env.local`
+- `.env.local` 权限设为 `600`
+- systemd 通过 `EnvironmentFile=/opt/podifyai/.env.local` 读取
+
+### 3. 首次部署建议先手动跑一次 `start.sh`
+
+这样更容易分辨问题是在：
+- 应用本身
+- Gunicorn
+- systemd
+- Nginx
+
+## 推荐检查命令
 
 ```bash
-cd /opt/podifyai
-source .venv/bin/activate
-git pull --ff-only origin main
-pip install -r requirements-ec2.txt
-python -m unittest discover -s tests -v
-sudo systemctl restart podifyai
+systemctl status podifyai --no-pager
+journalctl -u podifyai -n 50 --no-pager
+curl -I http://127.0.0.1:8000/
+curl -I http://127.0.0.1/
 ```
 
-如果想要一条命令更新，可以复制：
+## 什么时候看哪份文档
 
-```bash
-cp deploy/ec2/update.sh.example deploy/ec2/update.sh
-chmod +x deploy/ec2/update.sh
-```
-
-## 9. 现在这套部署的边界
-
-- 这是单机部署，`app.db`、`history_audio/`、`voice_previews/`、`pdf_storage/` 都在当前机器上。
-- 如果你后面要扩容到多台机器，数据库和文件存储需要拆出去。
-- 现在最适合的用法是：单台 EC2 + GitHub 拉代码更新。
+- 想从零部署一台新服务器：看 `VPS_DEPLOY_RUNBOOK.md`
+- 想快速照清单操作：看 `EC2_DEPLOY.md`
+- 想知道 `deploy/ec2/` 里的每个文件是干什么的：看本文件

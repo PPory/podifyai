@@ -1,96 +1,210 @@
-# PodifyAI EC2 部署说明
+# PodifyAI EC2 快速部署清单
 
-这份说明面向普通 Linux EC2 主机，默认使用 Gunicorn + systemd + Nginx。
+这份文档只保留最短上线路径。
 
-## 1. 拉取代码
+如果你要看完整流程、排障经验和常见问题，主文档请看：
+- `VPS_DEPLOY_RUNBOOK.md`
+
+适用场景：
+- 单台 AWS EC2
+- Ubuntu 22.04 / 24.04
+- Flask + Gunicorn + Nginx
+- SQLite 本地存储
+
+## 1. 部署前准备
+
+确认这几件事已经完成：
+- 已有服务器公网 IP
+- 已放行 `22` / `80` / `443`
+- 如果使用域名，DNS 已解析到服务器公网 IP
+- 已准备好 `.env.local`
+
+## 2. 安装系统依赖
 
 ```bash
-git clone <your-github-repo-url> podifyai
-cd podifyai
+sudo apt update
+sudo apt install -y git nginx ffmpeg python3 python3-venv python3-pip certbot python3-certbot-nginx
 ```
 
-## 2. 安装运行环境
+## 3. 放置代码
+
+推荐方式：本地打包后上传。
+
+服务器上准备目录：
 
 ```bash
-sudo yum update -y || sudo apt update -y
-sudo yum install -y python3 python3-pip nginx ffmpeg git || sudo apt install -y python3 python3-pip python3-venv nginx ffmpeg git
+sudo mkdir -p /opt/podifyai
+sudo chown $USER:$USER /opt/podifyai
+cd /opt/podifyai
+```
 
+如果直接从 GitHub 拉代码：
+
+```bash
+git clone <your-github-repo-url> .
+```
+
+## 4. 配置环境变量
+
+```bash
+cp .env.local.example .env.local
+chmod 600 .env.local
+```
+
+至少填写：
+- `SECRET_KEY`
+- `ALLOWED_ORIGINS`
+- `OPENAI_API_KEY`
+- `OPENAI_API_BASE`
+- `SILICONFLOW_API_KEY`
+- `SILICONFLOW_API_BASE`
+
+如果还没配 HTTPS，可先这样：
+
+```env
+ALLOWED_ORIGINS=http://<server-ip>,http://your-domain.com
+SESSION_COOKIE_SECURE=false
+```
+
+## 5. 安装 Python 依赖
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements-ec2.txt
 ```
 
-## 3. 配置环境变量
+## 6. 初始化数据库
 
-在项目根目录准备 `.env.local`，至少填好这些值：
+先建表：
 
-- `SECRET_KEY`
-- `OPENAI_API_KEY`
-- `OPENAI_API_BASE`
-- `SILICONFLOW_API_KEY`
-- `SILICONFLOW_API_BASE`
-- `ALLOWED_ORIGINS`
-- 需要登录、支付、邮件时再补 `SENDGRID_*`、`STRIPE_*`
-
-如果你用域名，`ALLOWED_ORIGINS` 要写成实际访问域名，例如：
-
-```env
-ALLOWED_ORIGINS=https://podifyai.example.com
-SESSION_COOKIE_SECURE=true
+```bash
+python - <<'PY'
+from app import app, db
+with app.app_context():
+    db.create_all()
+    print('DB_READY')
+PY
 ```
 
-## 4. 启动 Gunicorn
+如需管理员账号：
 
-先本地试跑一次：
+```bash
+python create_admin_user.py
+```
+
+## 7. 自检
+
+```bash
+python -m py_compile app.py auth.py billing.py content.py decorators.py extensions.py history.py models.py services.py static_routes.py tts.py voices.py wsgi.py gunicorn.conf.py init_db.py
+python -X utf8 -m unittest discover -s tests -v
+python -X utf8 -c "import app; print('IMPORT_OK')"
+```
+
+## 8. 先本地试跑 Gunicorn
 
 ```bash
 chmod +x deploy/ec2/start.sh
 ./deploy/ec2/start.sh
 ```
 
-默认监听 `127.0.0.1:8000` 的上游入口是 Nginx，Gunicorn 监听地址由 `gunicorn.conf.py` 控制。
+另开一个终端验证：
 
-## 5. 配置 systemd
+```bash
+curl -I http://127.0.0.1:8000/
+```
+
+## 9. 配置 systemd
 
 ```bash
 sudo cp deploy/ec2/podifyai.service.example /etc/systemd/system/podifyai.service
+sudo nano /etc/systemd/system/podifyai.service
 sudo systemctl daemon-reload
 sudo systemctl enable podifyai
 sudo systemctl start podifyai
-sudo systemctl status podifyai
+sudo systemctl status podifyai --no-pager
 ```
 
-如果项目目录不是 `/home/ec2-user/podifyai`，先修改 service 文件里的路径。
-
-## 6. 配置 Nginx
+## 10. 配置 Nginx
 
 ```bash
-sudo cp deploy/nginx/podifyai.conf.example /etc/nginx/conf.d/podifyai.conf
+sudo cp deploy/nginx/podifyai.conf.example /etc/nginx/sites-available/podifyai
+sudo ln -sf /etc/nginx/sites-available/podifyai /etc/nginx/sites-enabled/podifyai
 sudo nginx -t
-sudo systemctl enable nginx
 sudo systemctl restart nginx
 ```
 
-如需 HTTPS，建议再接入 Certbot。
-
-## 7. 更新到 GitHub 后拉新代码
+验证：
 
 ```bash
-cd /home/ec2-user/podifyai
-git pull origin main
-source .venv/bin/activate
-pip install -r requirements-ec2.txt
+curl -I http://127.0.0.1/
+curl -I http://your-domain.com/
+```
+
+## 11. 配置 HTTPS
+
+```bash
+sudo certbot --nginx -d your-domain.com --non-interactive --agree-tos --register-unsafely-without-email --redirect
+```
+
+然后把 `.env.local` 中的：
+
+```env
+SESSION_COOKIE_SECURE=false
+```
+
+改成：
+
+```env
+SESSION_COOKIE_SECURE=true
+```
+
+重启：
+
+```bash
 sudo systemctl restart podifyai
 ```
 
-## 8. 部署前检查
+验证：
 
 ```bash
-python -X utf8 -m unittest discover -s tests -v
-python -X utf8 -c "import app; print('IMPORT_OK')"
-node --check static/api.js
-node --check static/synth.js
-node --check static/history.js
-node --check static/player.js
+curl -I https://your-domain.com/
+curl -I http://your-domain.com/
 ```
+
+预期结果：
+- HTTPS 返回 `200`
+- HTTP 跳转到 HTTPS
+
+## 12. 后续更新
+
+```bash
+cd /opt/podifyai
+source .venv/bin/activate
+git pull --ff-only origin main
+pip install -r requirements-ec2.txt
+python -m unittest discover -s tests -v
+sudo systemctl restart podifyai
+```
+
+或者：
+
+```bash
+cp deploy/ec2/update.sh.example deploy/ec2/update.sh
+chmod +x deploy/ec2/update.sh
+./deploy/ec2/update.sh
+```
+
+## 13. 如果出问题优先看哪里
+
+按顺序检查：
+- `systemctl status podifyai --no-pager`
+- `systemctl status nginx --no-pager`
+- `sudo journalctl -u podifyai -n 50 --no-pager`
+- `curl -I http://127.0.0.1:8000/`
+- `curl -I http://127.0.0.1/`
+- `nslookup your-domain.com`
+
+如果要看完整排障说明，直接回到：
+- `VPS_DEPLOY_RUNBOOK.md`
