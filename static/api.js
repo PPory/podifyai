@@ -1166,8 +1166,10 @@
 
   function updateCreditsBadge(val) {
     const badge = document.getElementById('credits-badge');
+    const mobileBadge = document.getElementById('mobile-credits-badge');
     const btn = document.getElementById('nav-credits');
     if (badge) badge.textContent = (val ?? 0);
+    if (mobileBadge) mobileBadge.textContent = (val ?? 0);
     if (btn) btn.setAttribute('data-tooltip', `积分 ${val ?? 0}`);
   }
 
@@ -1485,9 +1487,11 @@
       console.log('使用的状态数据:', s);
       
       // 侧边栏积分徽标
-      const badge = document.querySelector('#credits-badge, .sidebar-points-badge');
-      if (badge) {
-        badge.textContent = s.credits;
+      const badges = Array.from(document.querySelectorAll('#credits-badge, #mobile-credits-badge, .sidebar-points-badge'));
+      if (badges.length) {
+        badges.forEach(badge => {
+          badge.textContent = s.credits;
+        });
         console.log('更新侧边栏积分:', s.credits);
       } else {
         console.log('未找到侧边栏积分徽标');

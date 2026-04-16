@@ -45,7 +45,7 @@
         <!-- 探索和创作台选项已移除 -->
 
         <nav class="nav-section nav-system">
-          <button class="nav-item" id="nav-credits" data-tooltip="积分" aria-label="积分">
+          <button class="nav-item" id="nav-credits" data-mobile-key="credits" data-tooltip="积分" aria-label="积分">
             <svg t="1755771876622" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="28519" width="24" height="24"><path d="M908.8 171.776h-62.976l0.64-0.64c21.12-22.4 30.848-49.536 27.904-78.464-2.56-25.728-17.024-46.464-40.576-58.368-51.584-26.112-133.504-4.096-172.672 19.072-48.64 28.672-115.712 81.792-149.12 108.928-33.408-27.264-100.608-80.256-149.12-108.928-39.168-23.04-121.088-45.056-172.672-19.072-23.552 11.904-37.888 32.64-40.576 58.368-2.944 28.928 6.656 56.064 27.904 78.464 0.256 0.256 0.384 0.512 0.64 0.64H115.2c-38.784 0-70.4 31.616-70.4 70.4v204.8c0 31.104 20.352 57.6 48.512 66.816-1.152 5.248-1.792 10.752-1.792 16.384v340.608c0 42.368 34.432 76.8 76.8 76.8h687.36c42.368 0 76.8-34.432 76.8-76.8V530.176c0-5.632-0.64-11.136-1.792-16.384 28.16-9.216 48.512-35.712 48.512-66.816v-204.8c0-38.784-31.616-70.4-70.4-70.4z m6.4 70.4v204.8c0 3.456-2.944 6.4-6.4 6.4H544v-217.6h364.8c3.456 0 6.4 2.944 6.4 6.4zM693.76 108.416c33.152-19.584 89.216-28.16 111.232-17.024 4.864 2.432 5.376 4.48 5.76 7.68 4.608 44.672-88.576 67.968-117.632 72.576h-89.728c29.696-22.784 63.616-47.36 90.368-63.232z m-480.512-9.216c0.384-3.2 0.896-5.248 5.76-7.68 22.016-11.136 78.208-2.56 111.232 17.024 26.752 15.744 60.672 40.448 90.368 63.36h-89.728c-29.056-4.736-122.112-28.032-117.632-72.704zM108.8 242.176c0-3.456 2.944-6.4 6.4-6.4h364.8v217.6H115.2c-3.456 0-6.4-2.944-6.4-6.4v-204.8z m46.72 628.736V530.176c0-6.912 5.888-12.8 12.8-12.8H480v366.336H168.32c-6.912 0-12.8-5.888-12.8-12.8z m712.96 0c0 6.912-5.888 12.8-12.8 12.8H544V517.376h311.68c6.912 0 12.8 5.888 12.8 12.8v340.736z" p-id="28520"></path></svg>
             <span class="label">积分</span>
             <span class="badge" id="credits-badge"></span>
@@ -160,6 +160,17 @@
                 </span>
                 <span>资料库</span>
               </a>
+              <button class="mobile-drawer-item" id="mobile-nav-credits" data-mobile-key="credits">
+                <span class="mobile-drawer-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"></path>
+                    <path d="M4 9h16"></path>
+                    <circle cx="15.5" cy="14" r="1.5"></circle>
+                  </svg>
+                </span>
+                <span class="mobile-drawer-label">积分</span>
+                <span class="mobile-drawer-badge" id="mobile-credits-badge"></span>
+              </button>
               <button class="mobile-drawer-item" id="mobile-nav-settings" data-mobile-key="settings">
                 <span class="mobile-drawer-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

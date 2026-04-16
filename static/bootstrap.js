@@ -157,6 +157,7 @@ function bootApp() {
       const mobileNewCreationButton = document.getElementById('mobile-new-creation');
       const mobileNavHome = document.getElementById('mobile-nav-home');
       const mobileNavNew = document.getElementById('mobile-nav-new');
+      const mobileNavCredits = document.getElementById('mobile-nav-credits');
       const mobileNavSettings = document.getElementById('mobile-nav-settings');
       const mobileNavItems = Array.from(document.querySelectorAll('.mobile-drawer-item[data-mobile-key]'));
 
@@ -301,6 +302,19 @@ function bootApp() {
       }
     };
 
+    const openCreditsPanel = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      closeMobileDrawer();
+      const creditsButton = document.getElementById('nav-credits');
+      if (creditsButton) {
+        setActive(creditsButton, true);
+      }
+      openBilling();
+    };
+
     const handleHomeNavigation = (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -356,6 +370,7 @@ function bootApp() {
     mobileHomeButton?.addEventListener('click', handleHomeNavigation);
     mobileNavHome?.addEventListener('click', handleHomeNavigation);
     mobileNavNew?.addEventListener('click', beginNewCreation);
+    mobileNavCredits?.addEventListener('click', openCreditsPanel);
 
     mobileNavToggle?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -544,11 +559,6 @@ function bootApp() {
       });
     });
 
-    // 为积分按钮添加点击事件
-    document.getElementById('nav-credits')?.addEventListener('click', () => {
-      setActive(document.getElementById('nav-credits'), true);
-    });
-
     // 为帮助和反馈链接添加点击事件
     const helpNavItems = Array.from(document.querySelectorAll('a[href="#help"]'));
     const feedbackNavItems = Array.from(document.querySelectorAll('a[href="#feedback"]'));
@@ -590,10 +600,7 @@ function bootApp() {
     // ==================== 积分系统事件绑定 ====================
     
     // Sidebar entry: open billing
-    document.getElementById('nav-credits')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      openBilling();
-    });
+    document.getElementById('nav-credits')?.addEventListener('click', openCreditsPanel);
 
     // Modal close
     document.getElementById('billing-close')?.addEventListener('click', closeBilling);
