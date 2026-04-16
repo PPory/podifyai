@@ -149,6 +149,48 @@ function bootApp() {
         singleMode?.classList.remove('active');
       }
 
+      const mobileDrawer = document.getElementById('mobile-drawer');
+      const mobileDrawerBackdrop = document.getElementById('mobile-drawer-backdrop');
+      const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+      const mobileDrawerClose = document.getElementById('mobile-drawer-close');
+      const mobileHomeButton = document.getElementById('mobile-home-btn');
+      const mobileNewCreationButton = document.getElementById('mobile-new-creation');
+      const mobileNavHome = document.getElementById('mobile-nav-home');
+      const mobileNavNew = document.getElementById('mobile-nav-new');
+      const mobileNavSettings = document.getElementById('mobile-nav-settings');
+      const mobileNavItems = Array.from(document.querySelectorAll('.mobile-drawer-item[data-mobile-key]'));
+
+      const openMobileDrawer = () => {
+        if (window.innerWidth > 768) return;
+        mobileDrawer?.classList.add('is-open');
+        mobileDrawerBackdrop?.classList.add('is-open');
+        mobileDrawer?.setAttribute('aria-hidden', 'false');
+        mobileDrawerBackdrop?.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('mobile-drawer-open');
+      };
+
+      const closeMobileDrawer = () => {
+        mobileDrawer?.classList.remove('is-open');
+        mobileDrawerBackdrop?.classList.remove('is-open');
+        mobileDrawer?.setAttribute('aria-hidden', 'true');
+        mobileDrawerBackdrop?.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('mobile-drawer-open');
+      };
+
+      const syncMobileActive = (key) => {
+        mobileNavItems.forEach(item => {
+          item.classList.toggle('is-active', Boolean(key) && item.dataset.mobileKey === key);
+        });
+      };
+
+      const resolveDesktopNav = (el) => {
+        if (!el) return null;
+        if (el.closest('.lh-sidebar')) return el;
+        const key = el.dataset.mobileKey;
+        if (!key) return el;
+        return document.querySelector(`.lh-sidebar [data-mobile-key="${key}"]`) || el;
+      };
+
       // ScrollSpy：根据视口中线命中高亮
       const navLinks = Array.from(document.querySelectorAll('.lh-sidebar .nav-item[href^="#"]'));
       const sections = navLinks
@@ -159,11 +201,13 @@ function bootApp() {
       let lastUserClick = 0; // 最后一次用户点击的时间戳
       
       const setActive = (a, isUserClick = false) => {
+        const desktopTarget = resolveDesktopNav(a);
         const all = document.querySelectorAll('.lh-sidebar .nav-item');
         all.forEach(n => n.classList.remove('is-active'));
-        if (a) {
-          a.classList.add('is-active');
+        if (desktopTarget) {
+          desktopTarget.classList.add('is-active');
         }
+        syncMobileActive(desktopTarget?.dataset.mobileKey || a?.dataset.mobileKey || null);
         
         if (isUserClick) {
           userClicked = true;
@@ -260,6 +304,7 @@ function bootApp() {
     const handleHomeNavigation = (e) => {
       e.preventDefault();
       e.stopPropagation();
+      closeMobileDrawer();
       goHomeView();
       forceScrollToTop();
       focusMainComposer();
@@ -274,6 +319,7 @@ function bootApp() {
         e.preventDefault();
         e.stopPropagation();
       }
+      closeMobileDrawer();
 
       const ok = resetCreationDraft({
         confirmIfDirty: true,
@@ -306,9 +352,39 @@ function bootApp() {
     }, true);
 
     newCreationButton?.addEventListener('click', beginNewCreation);
+    mobileNewCreationButton?.addEventListener('click', beginNewCreation);
+    mobileHomeButton?.addEventListener('click', handleHomeNavigation);
+    mobileNavHome?.addEventListener('click', handleHomeNavigation);
+    mobileNavNew?.addEventListener('click', beginNewCreation);
+
+    mobileNavToggle?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openMobileDrawer();
+    });
+
+    mobileDrawerClose?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeMobileDrawer();
+    });
+
+    mobileDrawerBackdrop?.addEventListener('click', closeMobileDrawer);
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        closeMobileDrawer();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDrawer?.classList.contains('is-open')) {
+        closeMobileDrawer();
+      }
+    });
 
     // 点击"设置"打开设置模态框
-    document.getElementById('nav-settings')?.addEventListener('click', () => {
+    const openSettingsModal = () => {
       const modal = document.getElementById('settings-modal');
       modal?.classList.remove('hidden');
       document.body.classList.add('is-modal-open'); // 添加模态框打开状态类
@@ -316,6 +392,14 @@ function bootApp() {
       setActive(document.getElementById('nav-settings'), true);
       // 更新设置信息
       updateSettingsModal();
+    };
+
+    document.getElementById('nav-settings')?.addEventListener('click', openSettingsModal);
+    mobileNavSettings?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeMobileDrawer();
+      openSettingsModal();
     });
     
     // 设置模态框关闭事件
@@ -434,13 +518,31 @@ function bootApp() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
-    // 为资料库导航项添加点击事件
-    const libraryNavItem = document.querySelector('a[href="#history-library"]');
-    if (libraryNavItem) {
-      libraryNavItem.addEventListener('click', () => {
-        setActive(libraryNavItem, true);
+    const scrollToLibrary = () => {
+      goHomeView();
+      requestAnimationFrame(() => {
+        historyLibrarySection?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
       });
-    }
+    };
+
+    // 为资料库导航项添加点击事件
+    const libraryNavItems = Array.from(document.querySelectorAll('a[href="#history-library"]'));
+    libraryNavItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        if (item.id === 'mobile-nav-library') {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMobileDrawer();
+          setActive(item, true);
+          scrollToLibrary();
+          return;
+        }
+        setActive(item, true);
+      });
+    });
 
     // 为积分按钮添加点击事件
     document.getElementById('nav-credits')?.addEventListener('click', () => {
@@ -448,20 +550,22 @@ function bootApp() {
     });
 
     // 为帮助和反馈链接添加点击事件
-    const helpNavItem = document.querySelector('a[href="#help"]');
-    const feedbackNavItem = document.querySelector('a[href="#feedback"]');
+    const helpNavItems = Array.from(document.querySelectorAll('a[href="#help"]'));
+    const feedbackNavItems = Array.from(document.querySelectorAll('a[href="#feedback"]'));
     
-    if (helpNavItem) {
-      helpNavItem.addEventListener('click', () => {
-        setActive(helpNavItem, true);
+    helpNavItems.forEach(item => {
+      item.addEventListener('click', () => {
+        closeMobileDrawer();
+        setActive(item, true);
       });
-    }
+    });
     
-    if (feedbackNavItem) {
-      feedbackNavItem.addEventListener('click', () => {
-        setActive(feedbackNavItem, true);
+    feedbackNavItems.forEach(item => {
+      item.addEventListener('click', () => {
+        closeMobileDrawer();
+        setActive(item, true);
       });
-    }
+    });
     
     // 初始化音量（默认 1.0）
     playerManager.initVolume();
@@ -922,8 +1026,8 @@ function bootApp() {
 
     // ===== 帮助 / 反馈 =====
     (function () {
-      const helpBtn = document.querySelector('a[href="#help"]');
-      const feedbackBtn = document.querySelector('a[href="#feedback"]');
+      const helpBtns = Array.from(document.querySelectorAll('a[href="#help"]'));
+      const feedbackBtns = Array.from(document.querySelectorAll('a[href="#feedback"]'));
       const helpModal = document.getElementById('help-modal');
       const feedbackModal = document.getElementById('feedback-modal');
       const closeBtns = document.querySelectorAll('[data-close-modal]');
@@ -941,8 +1045,20 @@ function bootApp() {
         }
       };
 
-      helpBtn?.addEventListener('click', (e) => { e.preventDefault(); open(helpModal); });
-      feedbackBtn?.addEventListener('click', (e) => { e.preventDefault(); open(feedbackModal); });
+      helpBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeMobileDrawer();
+          open(helpModal);
+        });
+      });
+      feedbackBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeMobileDrawer();
+          open(feedbackModal);
+        });
+      });
       closeBtns.forEach(btn => btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-close-modal');
         const m = document.getElementById(id);
