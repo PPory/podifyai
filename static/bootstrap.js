@@ -208,22 +208,104 @@ function bootApp() {
     // 设置默认激活状态为主页
     setActive(document.getElementById('sidebar-search'), true);
 
+    const homeButton = document.getElementById('sidebar-search');
+    const newCreationButton = document.getElementById('nav-new-creation');
+    const getHomeButton = () => document.getElementById('sidebar-search');
+
+    const forceScrollToTop = () => {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => {
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 100);
+
+        setTimeout(() => {
+          const firstElement = document.body.firstElementChild;
+          if (firstElement) {
+            firstElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 200);
+
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 300);
+      } catch (error) {
+        console.error('滚动执行出错:', error);
+      }
+    };
+
+    const goHomeView = () => {
+      if (typeof showPage === 'function') {
+        showPage('home');
+      }
+      if (typeof closeSourceSidebar === 'function') {
+        closeSourceSidebar();
+      }
+      if (window.location.hash) {
+        history.pushState(null, null, `${window.location.pathname}${window.location.search}`);
+      }
+    };
+
+    const focusMainComposer = () => {
+      if (mainTextarea) {
+        mainTextarea.focus();
+      }
+    };
+
+    const handleHomeNavigation = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      goHomeView();
+      forceScrollToTop();
+      focusMainComposer();
+      const currentHomeButton = getHomeButton();
+      if (currentHomeButton) {
+        setActive(currentHomeButton, true);
+      }
+    };
+
+    const beginNewCreation = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const ok = resetCreationDraft({
+        confirmIfDirty: true,
+        promptText: '是否清空当前内容开始新创作？'
+      });
+      if (!ok) return false;
+
+      goHomeView();
+      forceScrollToTop();
+      focusMainComposer();
+      const currentHomeButton = getHomeButton();
+      if (currentHomeButton) {
+        setActive(currentHomeButton, true);
+      }
+      return true;
+    };
+
+    const isTextInputTarget = (target) => {
+      if (!(target instanceof HTMLElement)) return false;
+      return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+    };
+
     // 键盘快捷键: N 新建
     document.addEventListener('keydown', (e) => {
+      if (isTextInputTarget(e.target)) return;
       if (e.key.toLowerCase() === 'n' && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault();
-        // 新建：清空并聚焦输入框
-        if (mainTextarea) {
-          if (mainTextarea.value.trim()) {
-            const ok = confirm('是否清空当前内容开始新建？');
-            if (!ok) return;
-          }
-          mainTextarea.value = '';
-          adjustTextareaHeight(mainTextarea);
-          mainTextarea.focus();
-        }
+        beginNewCreation();
       }
     }, true);
+
+    newCreationButton?.addEventListener('click', beginNewCreation);
 
     // 点击"设置"打开设置模态框
     document.getElementById('nav-settings')?.addEventListener('click', () => {
@@ -322,94 +404,14 @@ function bootApp() {
         playerManager?.setVolume(parseFloat(volumeValue) / 100);
       });
 
-    // 点击"主页"回滚到初始页面并聚焦主输入框
-    const homeButton = document.getElementById('sidebar-search');
+    // 点击"主页"回到首页并聚焦主输入框
     if (homeButton) {
       // 移除可能存在的旧事件监听器
       const newHomeButton = homeButton.cloneNode(true);
       homeButton.parentNode.replaceChild(newHomeButton, homeButton);
       
       // 重新绑定事件
-      newHomeButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        console.log('主页按钮被点击，开始回滚...');
-        
-        // 强制滚动到顶部的函数
-        const forceScrollToTop = () => {
-          try {
-            // 方法1: 使用 window.scrollTo
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-            console.log('方法1: window.scrollTo 执行成功');
-            
-            // 方法2: 使用 document.documentElement.scrollTop
-            setTimeout(() => {
-              document.documentElement.scrollTop = 0;
-              document.body.scrollTop = 0;
-              console.log('方法2: scrollTop 设置成功');
-            }, 100);
-            
-            // 方法3: 使用 scrollIntoView
-            setTimeout(() => {
-              const firstElement = document.body.firstElementChild;
-              if (firstElement) {
-                firstElement.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-                console.log('方法3: scrollIntoView 执行成功');
-              }
-            }, 200);
-            
-            // 方法4: 强制滚动（备用方案）
-            setTimeout(() => {
-              window.scrollTo(0, 0);
-              console.log('方法4: 强制滚动执行成功');
-            }, 300);
-            
-          } catch (error) {
-            console.error('滚动执行出错:', error);
-          }
-        };
-        
-        // 执行滚动
-        forceScrollToTop();
-        
-        // 2. 聚焦主输入框
-        if (mainTextarea) {
-          mainTextarea.focus();
-          console.log('聚焦主输入框成功');
-        }
-        
-        // 3. 设置主页为激活状态
-        setActive(newHomeButton, true);
-        console.log('设置激活状态成功');
-        
-        // 4. 清除URL中的hash（如果有的话）
-        if (window.location.hash) {
-          history.pushState(null, null, window.location.pathname);
-          console.log('清除URL hash成功');
-        }
-        
-        // 5. 验证滚动结果
-        setTimeout(() => {
-          const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          console.log(`当前滚动位置: ${currentScrollTop}px`);
-          if (currentScrollTop === 0) {
-            console.log('✅ 滚动到顶部验证成功');
-          } else {
-            console.log(`⚠️ 滚动到顶部验证失败，当前位置: ${currentScrollTop}px`);
-            // 再次尝试强制滚动
-            window.scrollTo(0, 0);
-          }
-        }, 500);
-        
-        console.log('主页按钮点击事件处理完成');
-      });
+      newHomeButton.addEventListener('click', handleHomeNavigation);
       
       console.log('主页按钮事件重新绑定成功');
     } else {
@@ -562,6 +564,7 @@ function bootApp() {
 
     // 为菜单内的按钮添加点击后关闭菜单的功能
     const downloadBtn = document.getElementById('gp-download-btn');
+    const closePlayerBtn = document.getElementById('gp-close-player-btn');
     const speedMenuContainer = document.getElementById('gp-speed-menu-container');
     playlistPanel = document.getElementById('playlist-panel');
     const closePlaylistPanelBtn = document.getElementById('close-playlist-panel');
@@ -615,6 +618,13 @@ function bootApp() {
         showMessage('当前没有可下载的音频', 'error');
       }
       moreOptionsMenu.classList.add('hidden');
+    });
+
+    closePlayerBtn?.addEventListener('click', () => {
+      document.querySelector('.volume-popover')?.classList.remove('open');
+      playlistPanel?.classList.remove('visible');
+      moreOptionsMenu.classList.add('hidden');
+      playerManager?.stopPlayback();
     });
 
     // 点击外部关闭菜单

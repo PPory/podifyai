@@ -148,6 +148,87 @@
     return normalizeDraftTitle(generatedTitle);
   }
 
+  function hasCreationDraft() {
+    const textareaText = (mainTextarea?.value || '').trim();
+    const bufferedContent = currentContent instanceof File
+      ? true
+      : (typeof currentContent === 'string' && currentContent.trim().length > 0);
+
+    return Boolean(
+      textareaText ||
+      bufferedContent ||
+      generatedScript ||
+      generatedTitle ||
+      window.originalInputContent ||
+      window.originalInputType ||
+      window.pdfFilename ||
+      window.pdfPath
+    );
+  }
+
+  function resetCreationDraft({
+    confirmIfDirty = false,
+    promptText = '是否清空当前内容开始新创作？',
+    resetVoices = true,
+    closePopovers = true
+  } = {}) {
+    if (confirmIfDirty && hasCreationDraft()) {
+      const ok = window.confirm(promptText);
+      if (!ok) return false;
+    }
+
+    generatedScript = '';
+    generatedTitle = '';
+    currentContent = '';
+    window.originalInputContent = '';
+    window.originalInputType = '';
+    window.pdfFilename = null;
+    window.pdfPath = null;
+
+    if (mainTextarea) {
+      mainTextarea.value = '';
+      mainTextarea.placeholder = defaultMainTextareaPlaceholder;
+      adjustTextareaHeight(mainTextarea);
+    }
+
+    if (pdfUploadInput) {
+      pdfUploadInput.value = '';
+    }
+
+    if (resetVoices) {
+      selectedVoices = { s1: null, s2: null };
+      selectedVoiceIds = { s1: null, s2: null };
+      if (typeof updateVoiceSelectionDisplay === 'function') {
+        updateVoiceSelectionDisplay();
+      } else if (voiceSelectText) {
+        voiceSelectText.textContent = '音色选择';
+      }
+    }
+
+    if (voiceList) {
+      voiceList.querySelectorAll('.voice-item.selected').forEach((item) => {
+        item.classList.remove('selected');
+      });
+    }
+
+    if (closePopovers && typeof closeAllPopovers === 'function') {
+      closeAllPopovers();
+    }
+
+    const page = document.querySelector('.page');
+    if (page) {
+      const audioContainers = page.querySelectorAll('div[style*="background: #f8f8f8"]');
+      audioContainers.forEach((container) => {
+        if (container.querySelector('h3')?.textContent === '生成的播客音频') {
+          container.remove();
+        }
+      });
+    }
+
+    updatePodcastButtonState();
+    return true;
+  }
+
   // 工具函数：优先按 ID 获取详情容器，不依赖具体层级
   const getDetailEl = () => {
     const rail = document.querySelector('.content-rail');
@@ -180,6 +261,7 @@
   
   // 主输入区域
   const mainTextarea = document.getElementById('main-textarea');
+  const defaultMainTextareaPlaceholder = mainTextarea?.getAttribute('placeholder') || '输入文字、上传文件或粘贴链接，我们帮你生成播客';
   const createScriptBtn = document.getElementById('create-script-btn');
   const synthesizePodcastBtn = document.getElementById('synthesize-podcast-btn');
   

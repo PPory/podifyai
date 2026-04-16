@@ -527,33 +527,22 @@
   // ==================== 模式切换 ====================
   
   // 清空界面内容的函数
-  const clearInterfaceContent = () => {
-    // 清空主 textarea 的内容
-    mainTextarea.value = '';
-    adjustTextareaHeight(mainTextarea);
-    // 清空音频播放器内容（查找并移除所有音频容器）
-    const page = document.querySelector('.page');
-    const audioContainers = page.querySelectorAll('div[style*="background: #f8f8f8"]');
-    audioContainers.forEach(container => {
-      if (container.querySelector('h3') && container.querySelector('h3').textContent === '生成的播客音频') {
-        container.remove();
-      }
-    });
-  };
+  const clearInterfaceContent = (options = {}) => resetCreationDraft({
+    resetVoices: false,
+    closePopovers: true,
+    ...options
+  });
   
   rolesMode?.addEventListener('click', () => {
-    // 智能确认：存在未保存内容则提示
-    if (mainTextarea && mainTextarea.value.trim().length > 0) {
-      const ok = confirm('切换模式将会清空当前输入的内容，您确定要继续吗？');
-      if (!ok) return;
-    }
+    if (!clearInterfaceContent({
+      confirmIfDirty: true,
+      promptText: '切换模式将会清空当前输入的内容，您确定要继续吗？'
+    })) return;
     currentMode = 'role';
     rolesMode.classList.add('active');
     singleMode.classList.remove('active');
     // 保存模式选择到本地存储
     storage.set('podifyai_mode', currentMode);
-    // 清空界面内容
-    clearInterfaceContent();
     // 重置音色选择状态
     selectedVoices = { s1: null, s2: null };
     selectedVoiceIds = { s1: null, s2: null };
@@ -571,18 +560,15 @@
   });
   
   singleMode?.addEventListener('click', () => {
-    // 智能确认：存在未保存内容则提示
-    if (mainTextarea && mainTextarea.value.trim().length > 0) {
-      const ok = confirm('切换模式将会清空当前输入的内容，您确定要继续吗？');
-      if (!ok) return;
-    }
+    if (!clearInterfaceContent({
+      confirmIfDirty: true,
+      promptText: '切换模式将会清空当前输入的内容，您确定要继续吗？'
+    })) return;
     currentMode = 'single';
     singleMode.classList.add('active');
     rolesMode.classList.remove('active');
     // 保存模式选择到本地存储
     storage.set('podifyai_mode', currentMode);
-    // 清空界面内容
-    clearInterfaceContent();
     // 重置音色选择状态
     selectedVoices = { s1: null, s2: null };
     selectedVoiceIds = { s1: null, s2: null };
