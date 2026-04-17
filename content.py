@@ -4,6 +4,68 @@ from services import *
 
 bp = Blueprint('content', __name__)
 
+URL_FETCH_ERROR_MAP = {
+    "ANTIBOT": "该链接可能启用了反爬/人机验证，暂无法解析",
+    "UNSUPPORTED_MIME": "该链接不是标准网页（可能是文件/媒体），无法解析正文",
+    "NETWORK_ERROR": "网络异常或目标站点无响应",
+}
+
+
+def _extract_url_payload(url: str, *, include_title: bool) -> tuple[dict | None, dict | None, int | None]:
+    fetch = smart_fetch_html(url)
+    if not fetch.get("ok"):
+        msg = URL_FETCH_ERROR_MAP.get(fetch.get("error_type"), "解析失败")
+        return None, {
+            "ok": False,
+            "error": msg,
+            "error_type": fetch.get("error_type"),
+            "resolved_url": fetch.get("url"),
+            "strategy": fetch.get("strategy"),
+            "status": fetch.get("status"),
+        }, 422
+
+    html = fetch["html"]
+    text = extract_text_from_html(html, mirrored=fetch["mirrored"])
+
+    if len(text) < MIN_ARTICLE_CHARS:
+        lower = html.lower()
+        if any(s in lower for s in ["subscribe to", "sign in", "log in", "members only", "paywall"]):
+            err = "该链接内容可能需要登录/订阅，无法获取正文"
+            err_type = "LOGIN_OR_PAYWALL"
+        else:
+            err = "未能可靠提取正文（内容过短或结构异常）"
+            err_type = "CONTENT_TOO_SHORT"
+        return None, {
+            "ok": False,
+            "error": err,
+            "error_type": err_type,
+            "resolved_url": fetch["url"],
+            "strategy": fetch["strategy"],
+        }, 422
+
+    title = ""
+    if include_title and not fetch["mirrored"]:
+        try:
+            soup = BeautifulSoup(html, "html.parser")
+            title = extract_title(soup)
+        except Exception:
+            title = ""
+
+    max_chars = 20000
+    if len(text) > max_chars:
+        text = text[:max_chars]
+
+    payload = {
+        "resolved_url": fetch["url"],
+        "text": text,
+        "word_count": len(text),
+        "strategy": fetch["strategy"],
+    }
+    if include_title:
+        payload["title"] = title
+    return payload, None, None
+
+
 @bp.route("/api/extract_from_url", methods=["POST"])
 def extract_from_url():
     """稳健的通用URL抽取接口"""
@@ -12,67 +74,20 @@ def extract_from_url():
     if not url:
         return jsonify({"ok": False, "error": "缺少 url"}), 400
 
-    # 抓取
-    fetch = smart_fetch_html(url)
-    if not fetch.get("ok"):
-        # 精细错误类型映射
-        error_map = {
-            "ANTIBOT": "该链接可能启用了反爬/人机验证，暂无法解析",
-            "UNSUPPORTED_MIME": "该链接不是标准网页（可能是文件/媒体），无法解析正文",
-            "NETWORK_ERROR": "网络异常或目标站点无响应",
-        }
-        msg = error_map.get(fetch.get("error_type"), "解析失败")
+    try:
+        payload, error_body, status = _extract_url_payload(url, include_title=True)
+    except Exception:
+        logging.exception("URL提取接口内部异常")
         return jsonify({
             "ok": False,
-            "error": msg,
-            "error_type": fetch.get("error_type"),
-            "resolved_url": fetch.get("url"),
-            "strategy": fetch.get("strategy"),
-            "status": fetch.get("status"),
-        }), 422
+            "error": "链接解析服务内部错误，请稍后重试",
+            "error_type": "INTERNAL_ERROR",
+        }), 500
 
-    html = fetch["html"]
-    text = extract_text_from_html(html, mirrored=fetch["mirrored"])
+    if error_body:
+        return jsonify(error_body), status
 
-    if len(text) < MIN_ARTICLE_CHARS:
-        # 进一步判断是否登录/付费提示
-        lower = html.lower()
-        if any(s in lower for s in ["subscribe to", "sign in", "log in", "members only", "paywall"]):
-            err = "该链接内容可能需要登录/订阅，无法获取正文"
-            et = "LOGIN_OR_PAYWALL"
-        else:
-            err = "未能可靠提取正文（内容过短或结构异常）"
-            et = "CONTENT_TOO_SHORT"
-        return jsonify({
-            "ok": False,
-            "error": err,
-            "error_type": et,
-            "resolved_url": fetch["url"],
-            "strategy": fetch["strategy"],
-        }), 422
-
-    # 补充标题（仅直连 HTML 时可解析；镜像无 DOM）
-    title = ""
-    if not fetch["mirrored"]:
-        try:
-            soup = BeautifulSoup(html, "html.parser")
-            title = extract_title(soup)
-        except Exception:
-            title = ""
-
-    # 限长（避免把超长正文全塞给模型）
-    max_chars = 20000
-    if len(text) > max_chars:
-        text = text[:max_chars]
-
-    return jsonify({
-        "ok": True,
-        "resolved_url": fetch["url"],
-        "title": title,
-        "text": text,
-        "word_count": len(text),
-        "strategy": fetch["strategy"],  # direct / mirror
-    })
+    return jsonify({"ok": True, **payload})
 
 @bp.route('/generate-script', methods=['POST'])
 @login_required
@@ -147,38 +162,22 @@ def generate_script_api():
                 return jsonify({"error": f"PDF处理失败: {str(e)}"}), 500
                 
         elif input_type == 'url':
-            # 使用新的稳健URL抽取系统
             try:
-                fetch = smart_fetch_html(content)
-                if not fetch.get("ok"):
-                    # 精细错误类型映射
-                    error_map = {
-                        "ANTIBOT": "该链接可能启用了反爬/人机验证，暂无法解析",
-                        "UNSUPPORTED_MIME": "该链接不是标准网页（可能是文件/媒体），无法解析正文",
-                        "NETWORK_ERROR": "网络异常或目标站点无响应",
-                    }
-                    msg = error_map.get(fetch.get("error_type"), "解析失败")
-                    return jsonify({"error": msg, "error_type": fetch.get("error_type")}), 400
+                payload, error_body, status = _extract_url_payload(content, include_title=False)
+            except Exception:
+                logging.exception("生成脚本前的URL解析内部异常")
+                return jsonify({
+                    "error": "链接解析服务内部错误，请稍后重试",
+                    "error_type": "INTERNAL_ERROR",
+                }), 500
 
-                html = fetch["html"]
-                extracted_text = extract_text_from_html(html, mirrored=fetch["mirrored"])
+            if error_body:
+                return jsonify({
+                    "error": error_body["error"],
+                    "error_type": error_body.get("error_type"),
+                }), 400 if status and status < 500 else status
 
-                if len(extracted_text) < MIN_ARTICLE_CHARS:
-                    # 进一步判断是否登录/付费提示
-                    lower = html.lower()
-                    if any(s in lower for s in ["subscribe to", "sign in", "log in", "members only", "paywall"]):
-                        return jsonify({"error": "该链接内容可能需要登录/订阅，无法获取正文", "error_type": "LOGIN_OR_PAYWALL"}), 400
-                    else:
-                        return jsonify({"error": "未能可靠提取正文（内容过短或结构异常）", "error_type": "CONTENT_TOO_SHORT"}), 400
-
-                # 限长（避免把超长正文全塞给模型）
-                max_chars = 20000
-                if len(extracted_text) > max_chars:
-                    extracted_text = extracted_text[:max_chars]
-                    
-            except Exception as e:
-                logging.error(f"URL内容解析失败: {e}")
-                return jsonify({"error": "URL内容解析失败，请确保URL有效且包含可提取的文本", "error_type": "NETWORK_ERROR"}), 400
+            extracted_text = payload["text"]
                 
         elif input_type == 'text':
             # 直接使用纯文本内容

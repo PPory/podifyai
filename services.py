@@ -54,6 +54,19 @@ logging.basicConfig(
     force=True,
 )
 
+DEFAULT_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/125.0 Safari/537.36"
+)
+UPSTREAM_TIMEOUT = int(os.getenv("UPSTREAM_TIMEOUT", "20"))
+MIN_ARTICLE_CHARS = int(os.getenv("MIN_ARTICLE_CHARS", "200"))
+ALLOW_TEXT_MIRROR = os.getenv("ALLOW_TEXT_MIRROR", "true").strip().lower() in {"1", "true", "yes", "on"}
+HTTP_HEADERS = {
+    "user-agent": DEFAULT_UA,
+    "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+
 def normalize_url(url: str) -> str:
     """通用规范化：去除片段、无意义参数等"""
     try:

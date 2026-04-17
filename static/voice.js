@@ -729,6 +729,7 @@
     CONTENT_TOO_SHORT: "正文提取不完整。建议：改用原文复制、或尝试同主题的其他来源链接。",
     UNSUPPORTED_MIME: "链接非标准网页（如文件/媒体）。建议：上传文件或复制文本。",
     NETWORK_ERROR: "网络异常或目标站点无响应。建议：稍后重试或更换网络。",
+    INTERNAL_ERROR: "链接解析服务内部错误。建议：稍后重试；若持续出现，请反馈该链接。",
   };
 
   confirmLinkBtn?.addEventListener('click', async () => {
