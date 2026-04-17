@@ -398,6 +398,98 @@ function bootApp() {
       }
     });
 
+    const setupHelpAndFeedbackModals = () => {
+      const helpModal = document.getElementById('help-modal');
+      const feedbackModal = document.getElementById('feedback-modal');
+      const helpBtns = [
+        document.getElementById('nav-help'),
+        document.getElementById('mobile-nav-help')
+      ].filter(Boolean);
+      const feedbackBtns = [
+        document.getElementById('nav-feedback'),
+        document.getElementById('mobile-nav-feedback')
+      ].filter(Boolean);
+      const closeBtns = document.querySelectorAll('[data-close-modal="help-modal"], [data-close-modal="feedback-modal"]');
+
+      const openModal = (modal, trigger) => {
+        if (!modal) return;
+        closeMobileDrawer();
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('is-modal-open');
+        if (trigger) setActive(trigger, true);
+      };
+
+      const closeModal = (modal) => {
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('is-modal-open');
+      };
+
+      helpBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openModal(helpModal, btn);
+        });
+      });
+
+      feedbackBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openModal(feedbackModal, btn);
+        });
+      });
+
+      closeBtns.forEach(btn => btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-close-modal');
+        closeModal(document.getElementById(id));
+      }));
+
+      [helpModal, feedbackModal].forEach(modal => modal?.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal(modal);
+        }
+      }));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (helpModal && !helpModal.classList.contains('hidden')) {
+            closeModal(helpModal);
+          } else if (feedbackModal && !feedbackModal.classList.contains('hidden')) {
+            closeModal(feedbackModal);
+          }
+        }
+      });
+
+      const form = document.getElementById('feedback-form');
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        const payload = { message: data.message?.trim(), email: data.email?.trim() || '' };
+        if (!payload.message) return alert('请填写反馈内容');
+
+        try {
+          const res = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error('bad status');
+          alert('已收到你的反馈，感谢！');
+          form.reset();
+          closeModal(feedbackModal);
+        } catch (err) {
+          const mailto = `mailto:support@podify.ai?subject=${encodeURIComponent('PodifyAI 用户反馈')}` +
+                         `&body=${encodeURIComponent(payload.message + (payload.email ? `\n\n联系方式：${payload.email}` : ''))}`;
+          window.location.href = mailto;
+          closeModal(feedbackModal);
+        }
+      });
+    };
+
+    setupHelpAndFeedbackModals();
+
     // 点击"设置"打开设置模态框
     const openSettingsModal = () => {
       const modal = document.getElementById('settings-modal');
@@ -559,24 +651,6 @@ function bootApp() {
       });
     });
 
-    // 为帮助和反馈链接添加点击事件
-    const helpNavItems = Array.from(document.querySelectorAll('a[href="#help"]'));
-    const feedbackNavItems = Array.from(document.querySelectorAll('a[href="#feedback"]'));
-    
-    helpNavItems.forEach(item => {
-      item.addEventListener('click', () => {
-        closeMobileDrawer();
-        setActive(item, true);
-      });
-    });
-    
-    feedbackNavItems.forEach(item => {
-      item.addEventListener('click', () => {
-        closeMobileDrawer();
-        setActive(item, true);
-      });
-    });
-    
     // 初始化音量（默认 1.0）
     playerManager.initVolume();
     
@@ -1028,93 +1102,6 @@ function bootApp() {
         e.preventDefault();
         grid.classList.toggle('collapsed'); // 触发 nth-child 规则
         setUi();
-      });
-    })();
-
-    // ===== 帮助 / 反馈 =====
-    (function () {
-      const helpBtns = Array.from(document.querySelectorAll('a[href="#help"]'));
-      const feedbackBtns = Array.from(document.querySelectorAll('a[href="#feedback"]'));
-      const helpModal = document.getElementById('help-modal');
-      const feedbackModal = document.getElementById('feedback-modal');
-      const closeBtns = document.querySelectorAll('[data-close-modal]');
-
-      const open = (el) => {
-        if (el) {
-          el.classList.remove('hidden');
-          document.body.classList.add('is-modal-open'); // 添加模态框打开状态类
-        }
-      };
-      const close = (el) => {
-        if (el) {
-          el.classList.add('hidden');
-          document.body.classList.remove('is-modal-open'); // 移除模态框打开状态类
-        }
-      };
-
-      helpBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeMobileDrawer();
-          open(helpModal);
-        });
-      });
-      feedbackBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeMobileDrawer();
-          open(feedbackModal);
-        });
-      });
-      closeBtns.forEach(btn => btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-close-modal');
-        const m = document.getElementById(id);
-        close(m);
-      }));
-
-      // 点击遮罩关闭
-      [helpModal, feedbackModal].forEach(m => m?.addEventListener('click', (e) => {
-        if (e.target === m) {
-          m.classList.add('hidden');
-          document.body.classList.remove('is-modal-open'); // 移除模态框打开状态类
-        }
-      }));
-
-      // ESC 关闭
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          if (helpModal && !helpModal.classList.contains('hidden')) {
-            close(helpModal);
-          } else if (feedbackModal && !feedbackModal.classList.contains('hidden')) {
-            close(feedbackModal);
-          }
-        }
-      });
-
-      // 反馈提交（优先尝试接口，失败则回退到邮件客户端）
-      const form = document.getElementById('feedback-form');
-      form?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(form).entries());
-        const payload = { message: data.message?.trim(), email: data.email?.trim() || '' };
-        if (!payload.message) return alert('请填写反馈内容');
-
-        try {
-          const res = await fetch('/api/feedback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          if (!res.ok) throw new Error('bad status');
-          alert('已收到你的反馈，感谢！');
-          form.reset();
-          close(feedbackModal);
-        } catch (err) {
-          const mailto = `mailto:support@podify.ai?subject=${encodeURIComponent('PodifyAI 用户反馈')}` +
-                         `&body=${encodeURIComponent(payload.message + (payload.email ? `\n\n联系方式：${payload.email}` : ''))}`;
-          window.location.href = mailto;
-          close(feedbackModal);
-        }
       });
     })();
 
