@@ -6397,6 +6397,10 @@ html.perf-lite .history-card {
     justify-content: center;
   }
 
+  .composer-primary-btn {
+    grid-column: 1 / -1;
+  }
+
   .icon-btn {
     border: 1px solid var(--border);
     background: #f5f5f6;

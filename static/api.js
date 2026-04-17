@@ -109,6 +109,7 @@
     
     // 优先使用真实标题，后端解析失败时回退到前端从脚本里提取的标题
     generatedTitle = normalizeDraftTitle(apiTitle) || normalizeDraftTitle(title) || '';
+    setComposerPrimaryAction('synthesize');
     
     // 更新文本区域
     mainTextarea.value = body;
@@ -148,6 +149,27 @@
     return normalizeDraftTitle(generatedTitle);
   }
 
+  function syncComposerPrimaryAction() {
+    const showSynthesize = composerPrimaryAction === 'synthesize';
+
+    if (createScriptBtn) {
+      createScriptBtn.classList.toggle('hidden', showSynthesize);
+      createScriptBtn.setAttribute('aria-hidden', showSynthesize ? 'true' : 'false');
+      createScriptBtn.tabIndex = showSynthesize ? -1 : 0;
+    }
+
+    if (synthesizePodcastBtn) {
+      synthesizePodcastBtn.classList.toggle('hidden', !showSynthesize);
+      synthesizePodcastBtn.setAttribute('aria-hidden', !showSynthesize ? 'true' : 'false');
+      synthesizePodcastBtn.tabIndex = !showSynthesize ? -1 : 0;
+    }
+  }
+
+  function setComposerPrimaryAction(action = 'create') {
+    composerPrimaryAction = action === 'synthesize' ? 'synthesize' : 'create';
+    syncComposerPrimaryAction();
+  }
+
   function hasCreationDraft() {
     const textareaText = (mainTextarea?.value || '').trim();
     const bufferedContent = currentContent instanceof File
@@ -179,6 +201,7 @@
 
     generatedScript = '';
     generatedTitle = '';
+    setComposerPrimaryAction('create');
     currentContent = '';
     window.originalInputContent = '';
     window.originalInputType = '';
@@ -322,6 +345,7 @@
   let currentContent = ''; // 当前输入内容
   let generatedScript = ''; // 生成的脚本
   let generatedTitle = '';
+  let composerPrimaryAction = 'create'; // create | synthesize
   let editingVoice = null; // 当前编辑的音色
   let currentlyPlayingAudio = null; // 当前正在播放的音频实例
   let playlist = [];                    // @deprecated 已统一使用 playerManager.playlist
@@ -671,8 +695,23 @@
     }
   };
 
-  // 更新播客按钮状态（恢复为控制 #synthesize-podcast-btn）
+  // 单主按钮状态：创作阶段显示"创作"，生成完成后切换为"播客"
   const updatePodcastButtonState = () => {
+    syncComposerPrimaryAction();
+    const showSynthesize = composerPrimaryAction === 'synthesize';
+
+    if (!showSynthesize) {
+      if (createScriptBtn) {
+        createScriptBtn.disabled = false;
+        createScriptBtn.style.opacity = '1';
+      }
+      if (synthesizePodcastBtn) {
+        synthesizePodcastBtn.disabled = true;
+        synthesizePodcastBtn.style.opacity = '0.7';
+      }
+      return;
+    }
+
     const hasContent = mainTextarea.value.trim().length > 0;
     // 根据模式检查音色选择
     const ok = currentMode === 'single'
