@@ -23,8 +23,8 @@ ListenHub 现已支持 SendGrid API 作为主要邮件发送服务，同时保�
 EMAIL_PROVIDER=sendgrid
 
 # SendGrid 配置
-SENDGRID_API_KEY=SG.xxxxxxxx
-SENDGRID_FROM=u4ptdek@your-verified-domain.com
+SENDGRID_API_KEY=<sendgrid-api-key>
+SENDGRID_FROM=noreply@your-verified-domain.com
 SENDGRID_FROM_NAME=ListenHub
 SENDGRID_SANDBOX=false
 
@@ -153,7 +153,7 @@ python test_sendgrid_integration.py
 
 ```
 EMAIL_PROVIDER=sendgrid
-SENDGRID_FROM=u4ptdek@your-verified-domain.com, SANDBOX=false, API_KEY_SET=YES
+SENDGRID_FROM=noreply@your-verified-domain.com, SANDBOX=false, API_KEY_SET=YES
 ```
 
 ## 常见问题

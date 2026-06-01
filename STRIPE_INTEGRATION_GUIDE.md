@@ -8,18 +8,18 @@
 
 ```bash
 # Stripe 基础
-STRIPE_SECRET_KEY=sk_live_xxx
-STRIPE_WEBHOOK_SECRET=whsec_xxx
+STRIPE_SECRET_KEY=<stripe-secret-key>
+STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
 STRIPE_SUCCESS_URL=https://你的域名/payment-success?paid=1
 STRIPE_CANCEL_URL=https://你的域名/#billing
 
 # 订阅价（月付）
-STRIPE_PRICE_LITE=price_xxx_lite_monthly      # $9 / mo，创作者（1000 积分/月）
-STRIPE_PRICE_PRO=price_xxx_pro_monthly        # $19 / mo，专业版（3000 积分/月）
+STRIPE_PRICE_LITE=<stripe-lite-price-id>      # $9 / mo，创作者（1000 积分/月）
+STRIPE_PRICE_PRO=<stripe-pro-price-id>        # $19 / mo，专业版（3000 积分/月）
 
 # 一次性积分包（可先设：1000=$9、3000=$19）
-STRIPE_PRICE_PACK_1000=price_xxx_pack1000
-STRIPE_PRICE_PACK_3000=price_xxx_pack3000
+STRIPE_PRICE_PACK_1000=<stripe-pack-1000-price-id>
+STRIPE_PRICE_PACK_3000=<stripe-pack-3000-price-id>
 ```
 
 ### 1.2 获取 Stripe 配置值

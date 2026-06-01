@@ -314,17 +314,17 @@ curl -I http://your-domain.com/
 如果你使用独立域名或二级域名，必须先让域名真实解析到服务器公网 IP。
 
 例如：
-- 域名：`podifyai.dpdns.org`
-- 服务器公网 IP：`3.129.71.123`
+- 域名：`your-domain.com`
+- 服务器公网 IP：`<server-ip>`
 
 应新增：
 - 类型：`A`
 - 名称：`@` 或该 DNS 面板要求的根记录形式
-- 内容：`3.129.71.123`
+- 内容：`<server-ip>`
 
 注意：
-- 如果 DNS 面板当前操作对象已经是 `podifyai.dpdns.org`，就不要再新建一个 `podifyai`
-- 否则会错误地变成 `podifyai.podifyai.dpdns.org`
+- 如果 DNS 面板当前操作对象已经是 `your-domain.com`，就不要再新建重复的子域名
+- 否则可能会错误地变成重复的二级域名
 
 ### 11.1 DNS 验证命令
 

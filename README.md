@@ -78,7 +78,7 @@ pip install -r requirements-web.txt
 ### 2. 配置环境变量
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
 至少需要填写：
