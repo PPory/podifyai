@@ -142,6 +142,7 @@ node --check static/player.js
 
 ## 文档索引
 
+- `DEMO.md`：本地演示截图与主要使用流程
 - `CONTRIBUTING.md`：参与贡献与反馈说明
 - `SECURITY.md`：安全问题报告方式
 - `ROADMAP.md`：近期维护计划
