@@ -8,6 +8,14 @@ PodifyAI 是一个面向内容创作的 AI 播客 Web 应用。它把 URL、PDF 
 - 仓库里仍保留部分模型相关文件，方便兼容、研究或本地实验。
 - 如果你只是部署 Web 产品，优先关注 `requirements-web.txt`、`requirements-ec2.txt`、`VPS_DEPLOY_RUNBOOK.md` 和 `deploy/`。
 
+## 项目状态
+
+- 当前项目处于早期开源阶段，主要由个人维护。
+- 仓库已经公开，包含许可证、环境变量模板、部署文档和基础测试。
+- 目前没有公开托管的在线 Demo，也没有可夸大的用户量或下载量。
+- 之前曾在 AWS 上部署并做过小范围试用，后续会继续完善文档、测试、部署稳定性和安全检查。
+- 欢迎通过 issue 提出问题、复现步骤、部署反馈或改进建议。
+
 ## 主要能力
 
 - URL、PDF、纯文本三种输入方式
@@ -94,7 +102,7 @@ cp .env.example .env.local
 - `STRIPE_*`
 - OTP 服务商相关配置
 
-完整示例见 `.env.local.example`。
+完整示例见 `.env.example`。
 
 ### 3. 启动项目
 
@@ -134,6 +142,9 @@ node --check static/player.js
 
 ## 文档索引
 
+- `CONTRIBUTING.md`：参与贡献与反馈说明
+- `SECURITY.md`：安全问题报告方式
+- `ROADMAP.md`：近期维护计划
 - `CODEX_HANDOFF.md`：本轮重构与遗留事项说明
 - `AUTH_API_README.md`：认证接口说明
 - `README_CREDITS_SYSTEM.md`：积分系统说明
