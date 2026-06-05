@@ -52,6 +52,29 @@ class UrlExtractionRuntimeTests(unittest.TestCase):
         self.assertEqual("INTERNAL_ERROR", data["error_type"])
         self.assertFalse(data["ok"])
 
+    def test_extract_from_url_returns_network_error_when_fetch_fails(self):
+        client = app.test_client()
+        with patch(
+            "content.smart_fetch_html",
+            return_value={
+                "ok": False,
+                "strategy": "direct",
+                "status": 0,
+                "url": "https://example.com/post",
+                "html": "",
+                "mirrored": False,
+                "error_type": "NETWORK_ERROR",
+            },
+        ):
+            response = client.post("/api/extract_from_url", json={"url": "https://example.com/post"})
+
+        self.assertEqual(422, response.status_code)
+        data = response.get_json()
+        self.assertFalse(data["ok"])
+        self.assertEqual("NETWORK_ERROR", data["error_type"])
+        self.assertEqual("direct", data["strategy"])
+        self.assertEqual(0, data["status"])
+
 
 if __name__ == "__main__":
     unittest.main()
