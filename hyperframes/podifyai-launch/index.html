@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PodifyAI Launch Showcase</title>
+  <style>
+    :root {
+      --bg: #0f1014;
+      --panel: #ffffff;
+      --text: #ffffff;
+      --muted: #a7a8ad;
+      --accent: #e91e63;
+      --accent-soft: rgba(233, 30, 99, 0.18);
+      --line: rgba(255, 255, 255, 0.14);
+      --shadow: 0 24px 90px rgba(0, 0, 0, 0.45);
+      --font: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: sans-serif;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      color: var(--text);
+      background:
+        linear-gradient(120deg, rgba(233, 30, 99, 0.16), transparent 28%),
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.12), transparent 18%),
+        linear-gradient(180deg, #17181d 0%, #0f1014 58%, #090a0d 100%);
+    }
+
+    #root::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 86%);
+      opacity: 0.34;
+    }
+
+    .duration-marker {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .topbar {
+      position: absolute;
+      top: 44px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 40;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      color: var(--accent);
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .brand-name {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .brand-name span {
+      color: var(--accent);
+    }
+
+    .runtime {
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .screen-shell {
+      position: absolute;
+      left: 120px;
+      top: 178px;
+      width: 1680px;
+      height: 802px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow);
+      z-index: 5;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .scene-video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-origin: center center;
+      will-change: transform, opacity;
+    }
+
+    .sheen {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      background:
+        linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.22) 42%, transparent 62%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.04), transparent 32%);
+      mix-blend-mode: screen;
+      opacity: 0.18;
+      transform: translateX(-40%);
+      will-change: transform;
+    }
+
+    .caption {
+      position: absolute;
+      left: 120px;
+      bottom: 70px;
+      z-index: 50;
+      width: 760px;
+      padding: 22px 26px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      background: rgba(15, 16, 20, 0.78);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(18px);
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .caption-kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .caption-title {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.12;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .caption-body {
+      margin: 12px 0 0;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 19px;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .focus {
+      position: absolute;
+      z-index: 45;
+      border: 4px solid var(--accent);
+      border-radius: 18px;
+      box-shadow:
+        0 0 0 999px rgba(0, 0, 0, 0.12),
+        0 0 34px rgba(233, 30, 99, 0.45);
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    .focus::after {
+      content: "";
+      position: absolute;
+      inset: -12px;
+      border: 1px solid rgba(233, 30, 99, 0.52);
+      border-radius: 24px;
+    }
+
+    .progress {
+      position: absolute;
+      left: 80px;
+      right: 80px;
+      bottom: 42px;
+      z-index: 60;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #ffffff);
+      box-shadow: 0 0 18px rgba(233, 30, 99, 0.6);
+    }
+
+    .intro-card,
+    .outro-card {
+      position: absolute;
+      inset: 0;
+      z-index: 70;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      opacity: 0;
+      background: rgba(9, 10, 13, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .intro-inner,
+    .outro-inner {
+      width: 1180px;
+      text-align: center;
+    }
+
+    .intro-eyebrow,
+    .outro-eyebrow {
+      margin: 0 0 20px;
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .intro-title,
+    .outro-title {
+      margin: 0;
+      font-size: 96px;
+      line-height: 0.98;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .intro-title span,
+    .outro-title span {
+      color: var(--accent);
+    }
+
+    .intro-copy,
+    .outro-copy {
+      width: 900px;
+      margin: 28px auto 0;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 28px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 42px;
+      padding: 16px 24px;
+      border-radius: 999px;
+      color: #0f1014;
+      background: #ffffff;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 16px 44px rgba(255, 255, 255, 0.18);
+    }
+
+    .cta-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(233, 30, 99, 0.76);
+    }
+
+    .side-note {
+      position: absolute;
+      right: 92px;
+      top: 118px;
+      z-index: 50;
+      width: 330px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      background: rgba(15, 16, 20, 0.72);
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 17px;
+      line-height: 1.42;
+      font-weight: 600;
+      backdrop-filter: blur(16px);
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="podifyai-launch" data-width="1920" data-height="1080" data-start="0" data-duration="30">
+    <div id="duration-marker" class="clip duration-marker" data-start="0" data-duration="30" data-track-index="0"></div>
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">〰</div>
+        <div class="brand-name">Podify<span>AI</span></div>
+      </div>
+      <div class="runtime">30s product showcase</div>
+    </div>
+
+    <div class="screen-shell">
+      <div id="scene-input" class="scene">
+        <video id="video-input" class="clip scene-video" data-layout-allow-overflow data-start="0" data-duration="4.2" data-track-index="10" src="assets/clips/01-input.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-generate" class="scene">
+        <video id="video-generate" class="clip scene-video" data-layout-allow-overflow data-start="3.6" data-duration="4.2" data-track-index="11" src="assets/clips/02-generate.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-script" class="scene">
+        <video id="video-script" class="clip scene-video" data-layout-allow-overflow data-start="7.3" data-duration="4.2" data-track-index="12" src="assets/clips/03-script.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-voices" class="scene">
+        <video id="video-voices" class="clip scene-video" data-layout-allow-overflow data-start="11" data-duration="3.6" data-track-index="13" src="assets/clips/04-voices.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-synthesis" class="scene">
+        <video id="video-synthesis" class="clip scene-video" data-layout-allow-overflow data-start="14" data-duration="4" data-track-index="14" src="assets/clips/05-synthesis.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-player" class="scene">
+        <video id="video-player" class="clip scene-video" data-layout-allow-overflow data-start="17.8" data-duration="4" data-track-index="15" src="assets/clips/06-player.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-history" class="scene">
+        <video id="video-history" class="clip scene-video" data-layout-allow-overflow data-start="21.5" data-duration="3.2" data-track-index="16" src="assets/clips/07-history.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div id="scene-final" class="scene">
+        <video id="video-final" class="clip scene-video" data-layout-allow-overflow data-start="24.2" data-duration="5.8" data-track-index="17" src="assets/clips/08-final.mp4" muted playsinline preload="auto"></video>
+      </div>
+      <div class="sheen" aria-hidden="true"></div>
+    </div>
+
+    <audio id="bgm-pulse" class="clip" data-start="0" data-duration="30" data-track-index="2" src="assets/podifyai-pulse.m4a" preload="auto"></audio>
+
+    <div id="intro" class="clip intro-card" data-start="0" data-duration="3.1" data-track-index="80">
+      <div class="intro-inner">
+        <p class="intro-eyebrow">Product Launch</p>
+        <h1 class="intro-title">Podify<span>AI</span></h1>
+        <p class="intro-copy">Turn any article, PDF, or text into a podcast you can actually listen to.</p>
+      </div>
+    </div>
+
+    <div id="outro" class="clip outro-card" data-start="25.2" data-duration="4.8" data-track-index="80" data-layout-allow-occlusion>
+      <div class="outro-inner">
+        <p class="outro-eyebrow" data-layout-allow-occlusion>PodifyAI</p>
+        <h2 class="outro-title" data-layout-allow-occlusion>Read less. <span data-layout-allow-occlusion>Listen more.</span></h2>
+        <p class="outro-copy" data-layout-allow-occlusion>A complete AI podcast workflow: input, script, voice, synthesis, playback, and history.</p>
+        <div class="cta" data-layout-allow-occlusion><span class="cta-dot"></span><span data-layout-allow-occlusion>View the project</span></div>
+      </div>
+    </div>
+
+    <div id="note-input" class="clip caption" data-start="3.2" data-duration="4.1" data-track-index="90">
+      <p class="caption-kicker">01 Input</p>
+      <h2 class="caption-title">Start with the content you already have.</h2>
+      <p class="caption-body">Paste a URL, upload a PDF, or drop in raw text.</p>
+    </div>
+    <div id="note-script" class="clip caption" data-start="7.2" data-duration="4.1" data-track-index="91">
+      <p class="caption-kicker">02 Script</p>
+      <h2 class="caption-title">It turns source material into a listenable show.</h2>
+      <p class="caption-body">Title and two-speaker podcast script are generated automatically.</p>
+    </div>
+    <div id="note-voices" class="clip caption" data-start="11.1" data-duration="3.5" data-track-index="92">
+      <p class="caption-kicker">03 Voices</p>
+      <h2 class="caption-title">Solo narration or dialogue in one switch.</h2>
+      <p class="caption-body">Pick the format and assign speaker voices before synthesis.</p>
+    </div>
+    <div id="note-synthesis" class="clip caption" data-start="14.2" data-duration="3.8" data-track-index="93">
+      <p class="caption-kicker">04 Synthesis</p>
+      <h2 class="caption-title">One click turns the script into audio.</h2>
+      <p class="caption-body">Visible progress makes the long-form generation feel controlled.</p>
+    </div>
+    <div id="note-player" class="clip caption" data-start="18" data-duration="3.8" data-track-index="94">
+      <p class="caption-kicker">05 Playback</p>
+      <h2 class="caption-title">The result is ready to play in the browser.</h2>
+      <p class="caption-body">Timeline controls make the podcast feel like a finished product.</p>
+    </div>
+    <div id="note-history" class="clip caption" data-start="21.7" data-duration="3.5" data-track-index="95">
+      <p class="caption-kicker">06 Library</p>
+      <h2 class="caption-title">Every generated podcast stays in history.</h2>
+      <p class="caption-body">The workflow ends as a reusable product, not a one-off script.</p>
+    </div>
+
+    <div id="side-note" class="clip side-note" data-start="9.4" data-duration="10.8" data-track-index="89">
+      Designed for a portfolio detail page: fast, readable, and focused on product value.
+    </div>
+
+    <div id="focus-input" class="clip focus" data-start="3.7" data-duration="3.5" data-track-index="100"></div>
+    <div id="focus-script" class="clip focus" data-start="7.7" data-duration="3.2" data-track-index="101"></div>
+    <div id="focus-voices" class="clip focus" data-start="11.4" data-duration="2.9" data-track-index="102"></div>
+    <div id="focus-progress" class="clip focus" data-start="14.4" data-duration="3.1" data-track-index="103"></div>
+    <div id="focus-player" class="clip focus" data-start="18.2" data-duration="3.2" data-track-index="104"></div>
+    <div id="focus-history" class="clip focus" data-start="21.9" data-duration="2.8" data-track-index="105"></div>
+
+    <div class="progress">
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    const DURATION = 30;
+    const sceneSpecs = [
+      { id: "scene-input", start: 0, duration: 4.2, from: [1.02, 0, 0], to: [1.1, 0, -18] },
+      { id: "scene-generate", start: 3.6, duration: 4.2, from: [1.08, 0, -20], to: [1.16, -26, -18] },
+      { id: "scene-script", start: 7.3, duration: 4.2, from: [1.15, 26, -10], to: [1.22, 34, -26] },
+      { id: "scene-voices", start: 11, duration: 3.6, from: [1.1, 0, -22], to: [1.2, -16, -34] },
+      { id: "scene-synthesis", start: 14, duration: 4, from: [1.14, 18, -30], to: [1.23, 24, -34] },
+      { id: "scene-player", start: 17.8, duration: 4, from: [1.18, 0, -40], to: [1.28, 0, -60] },
+      { id: "scene-history", start: 21.5, duration: 3.2, from: [1.08, 0, -14], to: [1.18, 0, -34] },
+      { id: "scene-final", start: 24.2, duration: 5.8, from: [1.03, 0, 0], to: [1.08, 0, -10] }
+    ];
+
+    const focusSpecs = {
+      "focus-input": [430, 472, 800, 138],
+      "focus-script": [312, 232, 1120, 438],
+      "focus-voices": [532, 420, 520, 116],
+      "focus-progress": [512, 548, 520, 122],
+      "focus-player": [376, 704, 980, 98],
+      "focus-history": [334, 622, 1060, 200]
+    };
+
+    const captionIds = ["note-input", "note-script", "note-voices", "note-synthesis", "note-player", "note-history"];
+    let currentTime = 0;
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function ease(value) {
+      const x = clamp(value, 0, 1);
+      return x * x * (3 - 2 * x);
+    }
+
+    function spanProgress(time, start, duration) {
+      return clamp((time - start) / duration, 0, 1);
+    }
+
+    function clipOpacity(time, start, duration, fade = 0.42) {
+      if (time < start || time > start + duration) return 0;
+      const fadeIn = clamp((time - start) / fade, 0, 1);
+      const fadeOut = clamp((start + duration - time) / fade, 0, 1);
+      return Math.min(fadeIn, fadeOut);
+    }
+
+    function setOpacity(id, value) {
+      const node = document.getElementById(id);
+      if (node) node.style.opacity = String(value);
+    }
+
+    function renderAt(time) {
+      currentTime = clamp(time, 0, DURATION);
+      document.querySelector(".progress-bar").style.width = `${(currentTime / DURATION) * 100}%`;
+      document.querySelector(".sheen").style.transform = `translateX(${(currentTime / DURATION) * 180 - 40}%)`;
+
+      for (const spec of sceneSpecs) {
+        const scene = document.getElementById(spec.id);
+        const video = scene.querySelector(".scene-video");
+        const opacity = clipOpacity(currentTime, spec.start, spec.duration, 0.48);
+        const p = ease(spanProgress(currentTime, spec.start, spec.duration));
+        const scale = spec.from[0] + (spec.to[0] - spec.from[0]) * p;
+        const x = spec.from[1] + (spec.to[1] - spec.from[1]) * p;
+        const y = spec.from[2] + (spec.to[2] - spec.from[2]) * p;
+        scene.style.opacity = String(opacity);
+        video.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      }
+
+      for (const id of captionIds) {
+        const node = document.getElementById(id);
+        const start = Number(node.dataset.start);
+        const duration = Number(node.dataset.duration);
+        const opacity = clipOpacity(currentTime, start, duration, 0.34);
+        node.style.opacity = String(opacity);
+        node.style.transform = `translateY(${(1 - opacity) * 18}px)`;
+      }
+
+      for (const [id, box] of Object.entries(focusSpecs)) {
+        const node = document.getElementById(id);
+        const start = Number(node.dataset.start);
+        const duration = Number(node.dataset.duration);
+        const opacity = clipOpacity(currentTime, start, duration, 0.22);
+        node.style.left = `${box[0]}px`;
+        node.style.top = `${box[1]}px`;
+        node.style.width = `${box[2]}px`;
+        node.style.height = `${box[3]}px`;
+        node.style.opacity = String(opacity);
+        node.style.transform = `scale(${0.985 + opacity * 0.015})`;
+      }
+
+      const introOpacity = clipOpacity(currentTime, 0, 3.1, 0.58);
+      const outroOpacity = clipOpacity(currentTime, 25.2, 4.8, 0.62);
+      const sideOpacity = clipOpacity(currentTime, 9.4, 10.8, 0.44);
+      setOpacity("intro", introOpacity);
+      setOpacity("outro", outroOpacity);
+      const sideNote = document.getElementById("side-note");
+      sideNote.style.opacity = String(sideOpacity);
+      sideNote.style.transform = `translateY(${(1 - sideOpacity) * -10}px)`;
+    }
+
+    renderAt(0);
+
+    const timeline = {
+      time(value) {
+        if (typeof value === "number") renderAt(value);
+        return currentTime;
+      },
+      seek(value) {
+        renderAt(Number(value) || 0);
+        return timeline;
+      },
+      progress(value) {
+        if (typeof value === "number") renderAt(value * DURATION);
+        return currentTime / DURATION;
+      },
+      pause() {
+        return timeline;
+      },
+      play() {
+        return timeline;
+      },
+      duration() {
+        return DURATION;
+      }
+    };
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["podifyai-launch"] = timeline;
+  </script>
+</body>
+</html>
