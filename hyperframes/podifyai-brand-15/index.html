@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PodifyAI 15s Brand Film</title>
+  <style>
+    :root {
+      --canvas: #fbfbfd;
+      --ink: #050505;
+      --muted: #5f6068;
+      --line: #e7e7ee;
+      --panel: #ffffff;
+      --accent: #e91e63;
+      --accent-strong: #ad174d;
+      --purple: #6f55d9;
+      --soft-pink: rgba(233, 30, 99, 0.08);
+      --soft-purple: rgba(111, 85, 217, 0.12);
+      --shadow: 0 28px 74px rgba(15, 23, 42, 0.13);
+      --font: "Inter", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--canvas);
+      font-family: "Inter", sans-serif;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #fbfbfd 58%, #f6f6fa 100%);
+    }
+
+    .clip.duration-marker {
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .ambient {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.44;
+      background-image:
+        linear-gradient(rgba(12, 12, 18, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(12, 12, 18, 0.045) 1px, transparent 1px);
+      background-size: 88px 88px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0.2) 72%, transparent 100%);
+    }
+
+    .data-line {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(233, 30, 99, 0), rgba(233, 30, 99, 0.34), rgba(111, 85, 217, 0));
+      transform-origin: left center;
+      opacity: 0.45;
+    }
+
+    .data-line.line-a {
+      top: 176px;
+      left: 106px;
+      width: 720px;
+    }
+
+    .data-line.line-b {
+      right: 110px;
+      top: 858px;
+      width: 640px;
+    }
+
+    .data-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(233, 30, 99, 0.42);
+      opacity: 0.6;
+    }
+
+    .data-dot.dot-a {
+      top: 172px;
+      left: 106px;
+    }
+
+    .data-dot.dot-b {
+      top: 854px;
+      right: 744px;
+      background: var(--purple);
+      box-shadow: 0 0 18px rgba(111, 85, 217, 0.44);
+    }
+
+    .code-rain {
+      position: absolute;
+      left: 90px;
+      bottom: 70px;
+      display: grid;
+      gap: 14px;
+      color: #5f6068;
+      font-family: monospace;
+      font-size: 22px;
+      line-height: 1;
+      opacity: 0.58;
+    }
+
+    .ghost-word {
+      position: absolute;
+      right: -38px;
+      top: 192px;
+      font-size: 210px;
+      font-weight: 900;
+      color: rgba(5, 5, 5, 0.05);
+      line-height: 0.9;
+      opacity: 0.9;
+    }
+
+    .ghost-word::before {
+      content: "AI\A PODCAST";
+      white-space: pre;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      opacity: 0;
+      overflow: hidden;
+      will-change: opacity, transform, filter;
+    }
+
+    #scene-brand {
+      opacity: 1;
+    }
+
+    .scene-content {
+      width: 100%;
+      height: 100%;
+      padding: 92px 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 36px;
+    }
+
+    .brand-open {
+      align-items: center;
+      text-align: center;
+      gap: 28px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 44px;
+      color: var(--purple);
+      font-size: 38px;
+      font-weight: 800;
+      filter: drop-shadow(0 8px 18px rgba(111, 85, 217, 0.22));
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 116px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-title .pink {
+      color: var(--accent);
+    }
+
+    .brand-title .black {
+      color: var(--ink);
+    }
+
+    .tagline {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    .keyword-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .keyword {
+      display: inline-flex;
+      align-items: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--muted);
+      font-size: 21px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .split-layout {
+      display: grid;
+      grid-template-columns: 0.84fr 1.16fr;
+      align-items: center;
+      gap: 68px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .scene-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      max-width: 650px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 38px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--soft-pink);
+      color: var(--accent-strong);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .headline {
+      margin: 0;
+      font-size: 70px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0;
+      color: var(--ink);
+      max-width: 680px;
+    }
+
+    .subline {
+      margin: 0;
+      color: var(--muted);
+      font-size: 28px;
+      line-height: 1.35;
+      font-weight: 650;
+      max-width: 640px;
+    }
+
+    .source-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      max-width: 620px;
+    }
+
+    .source-chip {
+      min-height: 48px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 20px;
+      font-weight: 750;
+      color: var(--ink);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .mockup-shell {
+      position: relative;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      will-change: transform, opacity;
+    }
+
+    .mockup-shell img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .browser-dots {
+      position: absolute;
+      top: 17px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 3;
+    }
+
+    .browser-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #d9d9df;
+    }
+
+    .home-mockup {
+      width: 1010px;
+      height: 650px;
+    }
+
+    .scan-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 45%;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(233, 30, 99, 0), rgba(233, 30, 99, 0.8), rgba(111, 85, 217, 0));
+      opacity: 0.78;
+      box-shadow: 0 0 24px rgba(233, 30, 99, 0.36);
+    }
+
+    .route-card {
+      position: absolute;
+      right: 76px;
+      bottom: 70px;
+      width: 370px;
+      padding: 20px 22px;
+      border: 1px solid rgba(233, 30, 99, 0.18);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.14);
+      backdrop-filter: blur(16px);
+    }
+
+    .route-card p {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .route-card small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .features-layout {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      align-items: center;
+      gap: 60px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 18px;
+      width: 610px;
+    }
+
+    .feature-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      align-items: center;
+      gap: 18px;
+      min-height: 94px;
+      padding: 18px 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
+      overflow: hidden;
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: #f5f1ff;
+      color: #050505;
+      border: 1px solid rgba(111, 85, 217, 0.2);
+      font-size: 25px;
+      font-weight: 900;
+      font-family: monospace;
+    }
+
+    .feature-item h3 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .feature-item p {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 20px;
+      font-weight: 650;
+      line-height: 1.25;
+    }
+
+    .feature-stack {
+      position: relative;
+      width: 820px;
+      height: 690px;
+    }
+
+    .mini-shot {
+      position: absolute;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.09);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 26px 72px rgba(15, 23, 42, 0.14);
+    }
+
+    .mini-shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .shot-dialog {
+      left: 14px;
+      top: 30px;
+      width: 570px;
+      height: 392px;
+    }
+
+    .shot-single {
+      right: 0;
+      top: 180px;
+      width: 540px;
+      height: 376px;
+    }
+
+    .shot-voice {
+      left: 104px;
+      bottom: 16px;
+      width: 380px;
+      height: 294px;
+    }
+
+    .data-card {
+      position: absolute;
+      right: 38px;
+      bottom: 34px;
+      width: 250px;
+      padding: 18px 18px 16px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #050505;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 22px 52px rgba(15, 23, 42, 0.12);
+    }
+
+    .data-card p {
+      margin: 0;
+      color: #5f6068;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .data-card strong {
+      display: block;
+      margin-top: 8px;
+      color: #050505;
+      font-size: 27px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .library-layout {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      align-items: center;
+      gap: 60px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .library-shot {
+      width: 980px;
+      height: 650px;
+    }
+
+    .path-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      max-width: 610px;
+    }
+
+    .path-nodes {
+      display: grid;
+      gap: 16px;
+      position: relative;
+    }
+
+    .path-nodes::before {
+      content: "";
+      position: absolute;
+      left: 28px;
+      top: 30px;
+      bottom: 30px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--purple));
+      opacity: 0.42;
+    }
+
+    .node {
+      position: relative;
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      align-items: center;
+      gap: 18px;
+      min-height: 68px;
+      padding: 10px 16px 10px 0;
+    }
+
+    .node-index {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: #fff;
+      color: var(--accent-strong);
+      border: 1px solid rgba(233, 30, 99, 0.24);
+      font-size: 21px;
+      font-weight: 900;
+      box-shadow: 0 12px 26px rgba(233, 30, 99, 0.1);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .node h3 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .node p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 19px;
+      font-weight: 650;
+    }
+
+    .detail-card {
+      position: absolute;
+      left: 620px;
+      bottom: 92px;
+      width: 460px;
+      height: 250px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 24px 54px rgba(15, 23, 42, 0.12);
+    }
+
+    .detail-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .outro-content {
+      align-items: center;
+      text-align: center;
+      gap: 26px;
+    }
+
+    .outro-panel {
+      display: grid;
+      justify-items: center;
+      gap: 26px;
+      width: 100%;
+    }
+
+    .final-route {
+      display: grid;
+      grid-template-columns: auto auto auto auto auto;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .final-pill {
+      min-height: 52px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .create-button {
+      margin-top: 20px;
+      min-width: 150px;
+      min-height: 64px;
+      border-radius: 18px;
+      border: 0;
+      background: #050505;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 20px 42px rgba(5, 5, 5, 0.2);
+    }
+
+    .transition-block {
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      transform: translateX(-1920px);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    #wipe-a {
+      background: #050505;
+    }
+
+    #wipe-b {
+      background: var(--accent);
+    }
+
+    #grid-transition {
+      position: absolute;
+      inset: 0;
+      z-index: 82;
+      pointer-events: none;
+    }
+
+    .grid-cell {
+      position: absolute;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    .progress-line {
+      position: absolute;
+      left: 120px;
+      right: 120px;
+      bottom: 54px;
+      height: 3px;
+      z-index: 90;
+      border-radius: 999px;
+      background: rgba(5, 5, 5, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      box-shadow: 0 0 16px rgba(233, 30, 99, 0.28);
+    }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="podifyai-brand-15" data-width="1920" data-height="1080" data-start="0" data-duration="15">
+    <div id="duration-marker" class="clip duration-marker" data-start="0" data-duration="15" data-track-index="0"></div>
+    <audio id="bgm" class="clip" data-start="0" data-duration="15" data-track-index="2" data-volume="0.78" src="assets/audio/podifyai-tech-bed.wav" preload="auto"></audio>
+
+    <div class="ambient" data-layout-ignore>
+      <div class="grid"></div>
+      <div class="data-line line-a"></div>
+      <div class="data-line line-b"></div>
+      <div class="data-dot dot-a"></div>
+      <div class="data-dot dot-b"></div>
+      <div class="code-rain">
+        <span>[S1] idea.input()</span>
+        <span>{ AI: podcast }</span>
+        <span>audio.render()</span>
+      </div>
+      <div class="ghost-word" aria-hidden="true"></div>
+    </div>
+
+    <section id="scene-brand" class="scene">
+      <div class="scene-content brand-open">
+        <div class="brand-mark entrance brand-open-mark">〰</div>
+        <h1 class="brand-title entrance brand-open-title"><span class="pink">Podify</span> <span class="black">AI</span></h1>
+        <p class="tagline entrance brand-open-tagline">把你的创意转为播客</p>
+        <div class="keyword-row entrance brand-open-keywords">
+          <span class="keyword">AI</span>
+          <span class="keyword">知识科普</span>
+          <span class="keyword">播客</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="scene-input" class="scene">
+      <div class="scene-content">
+        <div class="split-layout">
+          <div class="scene-copy">
+            <span class="eyebrow entrance input-eyebrow">创作</span>
+            <h2 class="headline entrance input-headline">输入文字、上传文件或粘贴链接</h2>
+            <p class="subline entrance input-subline">我们帮你生成播客</p>
+            <div class="source-strip entrance input-sources">
+              <span class="source-chip">Text</span>
+              <span class="source-chip">PDF</span>
+              <span class="source-chip">URL</span>
+              <span class="source-chip">AI</span>
+            </div>
+          </div>
+          <div class="mockup-shell home-mockup entrance input-mockup">
+            <div class="browser-dots"><span></span><span></span><span></span></div>
+            <img src="assets/screens/home-main.png" alt="PodifyAI 首页" draggable="false" />
+            <div class="scan-line"></div>
+            <div class="route-card entrance input-route">
+              <p>输入 → 创作 → 播客</p>
+              <small>把你的创意转为播客</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scene-features" class="scene">
+      <div class="scene-content">
+        <div class="features-layout">
+          <div class="scene-copy">
+            <span class="eyebrow entrance feature-eyebrow">AI 播客生成</span>
+            <h2 class="headline entrance feature-headline">对话、单人、音色，快速组合</h2>
+            <div class="feature-list">
+              <div class="feature-item entrance feature-a">
+                <div class="feature-icon">S1</div>
+                <div>
+                  <h3>对话式</h3>
+                  <p>双人漫谈 / 嘉宾访谈 / 观点碰撞</p>
+                </div>
+              </div>
+              <div class="feature-item entrance feature-b">
+                <div class="feature-icon">AI</div>
+                <div>
+                  <h3>单人式</h3>
+                  <p>观点独白 / 知识科普 / 故事讲述</p>
+                </div>
+              </div>
+              <div class="feature-item entrance feature-c">
+                <div class="feature-icon">♪</div>
+                <div>
+                  <h3>音色选择</h3>
+                  <p>可定制自己的音色</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="feature-stack">
+            <div class="mini-shot shot-dialog entrance feature-shot-a">
+              <img src="assets/screens/dialog-menu.png" alt="对话式菜单" draggable="false" />
+            </div>
+            <div class="mini-shot shot-single entrance feature-shot-b">
+              <img src="assets/screens/single-menu.png" alt="单人式菜单" draggable="false" />
+            </div>
+            <div class="mini-shot shot-voice entrance feature-shot-c">
+              <img src="assets/screens/voice-library.png" alt="音色库" draggable="false" />
+            </div>
+            <div class="data-card entrance feature-data">
+              <p>{ mode }</p>
+              <strong>对话式 + 单人式</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scene-library" class="scene">
+      <div class="scene-content">
+        <div class="library-layout">
+          <div class="mockup-shell library-shot entrance library-shot-main">
+            <img src="assets/screens/library-grid.png" alt="PodifyAI 作品集" draggable="false" />
+          </div>
+          <div class="path-panel">
+            <span class="eyebrow entrance library-eyebrow">作品集</span>
+            <h2 class="headline entrance library-headline">创作流程清晰收束</h2>
+            <div class="path-nodes">
+              <div class="node entrance node-a">
+                <span class="node-index">01</span>
+                <div><h3>脚本内容</h3><p>从创意进入内容结构</p></div>
+              </div>
+              <div class="node entrance node-b">
+                <span class="node-index">02</span>
+                <div><h3>音频下载</h3><p>生成后可播放与下载</p></div>
+              </div>
+              <div class="node entrance node-c">
+                <span class="node-index">03</span>
+                <div><h3>播放全部</h3><p>作品进入播客资料库</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-card entrance library-detail">
+            <img src="assets/screens/detail-script.png" alt="脚本内容详情" draggable="false" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scene-outro" class="scene">
+      <div class="scene-content outro-content">
+        <div class="outro-panel">
+          <div class="brand-mark entrance outro-mark">〰</div>
+          <h2 class="brand-title entrance outro-title"><span class="pink">Podify</span> <span class="black">AI</span></h2>
+          <p class="tagline entrance outro-tagline">把你的创意转为播客</p>
+          <div class="final-route entrance outro-route">
+            <span class="final-pill">输入文字</span>
+            <span class="arrow">→</span>
+            <span class="final-pill">生成播客</span>
+            <span class="arrow">→</span>
+            <span class="final-pill">作品集</span>
+          </div>
+          <button class="create-button entrance outro-button">创作</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="wipe-a" class="transition-block" data-layout-ignore></div>
+    <div id="wipe-b" class="transition-block" data-layout-ignore></div>
+    <div id="grid-transition" data-layout-ignore></div>
+
+    <div class="progress-line" data-layout-ignore>
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <script>
+    const DURATION = 15;
+    let currentTime = 0;
+
+    const scenes = [
+      { id: "scene-brand", start: 0, end: 3.08, fadeIn: 0.22, fadeOut: 0.48 },
+      { id: "scene-input", start: 2.72, end: 6.22, fadeIn: 0.52, fadeOut: 0.38 },
+      { id: "scene-features", start: 5.92, end: 9.62, fadeIn: 0.46, fadeOut: 0.48 },
+      { id: "scene-library", start: 9.24, end: 12.58, fadeIn: 0.54, fadeOut: 0.54 },
+      { id: "scene-outro", start: 12.12, end: 15, fadeIn: 0.62, fadeOut: 0.42 }
+    ];
+
+    const entrances = [
+      ["brand-open-mark", 0.14, 0.46, { y: -18, scale: 0.84 }],
+      ["brand-open-title", 0.28, 0.62, { y: 34, scale: 0.98 }],
+      ["brand-open-tagline", 0.56, 0.48, { y: 24, scale: 1 }],
+      ["brand-open-keywords", 0.86, 0.46, { y: 28, scale: 0.96 }],
+
+      ["input-eyebrow", 2.98, 0.34, { x: -40, scale: 0.94 }],
+      ["input-headline", 3.12, 0.52, { y: 44, scale: 0.98 }],
+      ["input-subline", 3.34, 0.42, { x: -32, scale: 1 }],
+      ["input-sources", 3.58, 0.44, { y: 32, scale: 0.97 }],
+      ["input-mockup", 3.06, 0.72, { x: 58, scale: 0.94 }],
+      ["input-route", 3.72, 0.38, { y: 24, scale: 0.9 }],
+
+      ["feature-eyebrow", 6.16, 0.28, { x: -32, scale: 0.96 }],
+      ["feature-headline", 6.28, 0.46, { y: 38, scale: 0.99 }],
+      ["feature-a", 6.48, 0.34, { x: -44, scale: 0.96 }],
+      ["feature-b", 6.62, 0.34, { x: 36, scale: 0.96 }],
+      ["feature-c", 6.76, 0.34, { y: 34, scale: 0.96 }],
+      ["feature-shot-a", 6.18, 0.54, { x: 42, y: -18, scale: 0.94 }],
+      ["feature-shot-b", 6.48, 0.48, { x: -36, y: 20, scale: 0.95 }],
+      ["feature-shot-c", 6.7, 0.42, { y: 38, scale: 0.92 }],
+      ["feature-data", 7.02, 0.32, { y: 26, scale: 0.88 }],
+
+      ["library-shot-main", 9.48, 0.56, { x: -48, scale: 0.95 }],
+      ["library-eyebrow", 9.62, 0.32, { x: 36, scale: 0.94 }],
+      ["library-headline", 9.74, 0.44, { y: 38, scale: 0.98 }],
+      ["node-a", 9.96, 0.32, { x: 34, scale: 0.96 }],
+      ["node-b", 10.12, 0.32, { x: -28, scale: 0.96 }],
+      ["node-c", 10.28, 0.32, { y: 30, scale: 0.96 }],
+      ["library-detail", 10.28, 0.42, { y: 36, scale: 0.92 }],
+
+      ["outro-mark", 12.42, 0.4, { y: -22, scale: 0.86 }],
+      ["outro-title", 12.6, 0.52, { y: 32, scale: 0.97 }],
+      ["outro-tagline", 12.84, 0.44, { y: 22, scale: 1 }],
+      ["outro-route", 13.12, 0.42, { y: 30, scale: 0.95 }],
+      ["outro-button", 13.48, 0.34, { y: 24, scale: 0.9 }]
+    ];
+
+    const ambientSpecs = [
+      { selector: ".line-a", x: 46, start: 0, duration: 15 },
+      { selector: ".line-b", x: -54, start: 0, duration: 15 },
+      { selector: ".dot-a", x: 660, start: 0, duration: 15 },
+      { selector: ".dot-b", x: -570, start: 0, duration: 15 },
+      { selector: ".code-rain", y: -42, start: 0, duration: 15 },
+      { selector: ".ghost-word", y: 24, start: 0, duration: 15 }
+    ];
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function easeOut(value) {
+      const x = clamp(value, 0, 1);
+      return 1 - Math.pow(1 - x, 3);
+    }
+
+    function easeInOut(value) {
+      const x = clamp(value, 0, 1);
+      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    }
+
+    function sceneOpacity(time, spec) {
+      if (time < spec.start || time > spec.end) return 0;
+      const fadeIn = easeOut((time - spec.start) / spec.fadeIn);
+      const fadeOut = easeOut((spec.end - time) / spec.fadeOut);
+      return Math.min(fadeIn, fadeOut, 1);
+    }
+
+    function setTransform(node, x, y, scale) {
+      node.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    }
+
+    function applyEntrance(time, className, start, duration, from) {
+      const nodes = document.querySelectorAll("." + className);
+      const raw = (time - start) / duration;
+      const p = easeOut(raw);
+      const opacity = clamp(p, 0, 1);
+      const x = (from.x || 0) * (1 - p);
+      const y = (from.y || 0) * (1 - p);
+      const scale = (from.scale || 1) + (1 - (from.scale || 1)) * p;
+      nodes.forEach((node) => {
+        node.style.opacity = String(opacity);
+        setTransform(node, x, y, scale);
+      });
+    }
+
+    function applyScan(time) {
+      const scan = document.querySelector(".scan-line");
+      const p = ((time - 3.1) % 1.7 + 1.7) % 1.7 / 1.7;
+      scan.style.transform = `translateY(${(p - 0.5) * 420}px)`;
+      scan.style.opacity = String(time > 3.1 && time < 5.8 ? 0.72 : 0);
+    }
+
+    function applyAmbient(time) {
+      ambientSpecs.forEach((spec) => {
+        const node = document.querySelector(spec.selector);
+        if (!node) return;
+        const p = easeInOut((time - spec.start) / spec.duration);
+        const x = (spec.x || 0) * p;
+        const y = (spec.y || 0) * p;
+        node.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }
+
+    function applyWipe(time, start) {
+      const blocks = [
+        { id: "wipe-a", delay: 0 },
+        { id: "wipe-b", delay: 0.06 }
+      ];
+      blocks.forEach((block) => {
+        const node = document.getElementById(block.id);
+        const t = time - start - block.delay;
+        let x = -1920;
+        let opacity = 0;
+        if (t >= 0 && t < 0.78) {
+          opacity = 1;
+          if (t < 0.25) {
+            x = -1920 + 1920 * easeInOut(t / 0.25);
+          } else if (t < 0.45) {
+            x = 0;
+          } else {
+            x = 1920 * easeInOut((t - 0.45) / 0.27);
+          }
+        }
+        node.style.opacity = String(opacity);
+        node.style.transform = `translateX(${x}px)`;
+      });
+    }
+
+    function createGridTransition() {
+      const holder = document.getElementById("grid-transition");
+      const colors = ["#050505", "#e91e63", "#6f55d9", "#ffffff", "#f1f1f5"];
+      const cols = 8;
+      const rows = 5;
+      const w = 1920 / cols;
+      const h = 1080 / rows;
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const cell = document.createElement("div");
+          cell.className = "grid-cell";
+          cell.style.left = `${x * w}px`;
+          cell.style.top = `${y * h}px`;
+          cell.style.width = `${w}px`;
+          cell.style.height = `${h}px`;
+          cell.style.background = colors[(x + y) % colors.length];
+          cell.dataset.delay = String((Math.abs(x - 3.5) + Math.abs(y - 2)) * 0.025);
+          holder.appendChild(cell);
+        }
+      }
+    }
+
+    function applyGridTransition(time, start) {
+      const cells = document.querySelectorAll(".grid-cell");
+      cells.forEach((cell, index) => {
+        const delay = Number(cell.dataset.delay || 0);
+        const t = time - start - delay;
+        let opacity = 0;
+        let scale = 0.96;
+        if (t >= 0 && t < 0.74) {
+          const inP = easeInOut(t / 0.24);
+          const outP = easeInOut((t - 0.38) / 0.28);
+          opacity = clamp(Math.min(inP, 1 - outP), 0, 0.88);
+          scale = 0.96 + opacity * 0.05;
+        }
+        cell.style.opacity = String(opacity);
+        cell.style.transform = `scale(${scale})`;
+      });
+    }
+
+    function applySceneFilters(time) {
+      scenes.forEach((scene) => {
+        const node = document.getElementById(scene.id);
+        node.style.filter = "blur(0px)";
+        node.style.transform = "scale(1)";
+      });
+      const blurWindows = [
+        ["scene-brand", "scene-input", 2.72, 0.52],
+        ["scene-library", "scene-outro", 12.1, 0.62]
+      ];
+      blurWindows.forEach(([fromId, toId, start, duration]) => {
+        const p = clamp((time - start) / duration, 0, 1);
+        if (p > 0 && p < 1) {
+          const from = document.getElementById(fromId);
+          const to = document.getElementById(toId);
+          from.style.filter = `blur(${8 * p}px)`;
+          from.style.transform = `scale(${1 + 0.018 * p})`;
+          to.style.filter = `blur(${8 * (1 - p)}px)`;
+          to.style.transform = `scale(${0.982 + 0.018 * p})`;
+        }
+      });
+    }
+
+    function renderAt(time) {
+      currentTime = clamp(time, 0, DURATION);
+      document.querySelector(".progress-fill").style.width = `${(currentTime / DURATION) * 100}%`;
+
+      scenes.forEach((spec) => {
+        const node = document.getElementById(spec.id);
+        node.style.opacity = String(sceneOpacity(currentTime, spec));
+      });
+
+      entrances.forEach((item) => applyEntrance(currentTime, item[0], item[1], item[2], item[3]));
+      applyAmbient(currentTime);
+      applySceneFilters(currentTime);
+      applyScan(currentTime);
+      applyWipe(currentTime, 5.78);
+      applyGridTransition(currentTime, 9.06);
+
+      const home = document.querySelector(".home-mockup");
+      const inputP = clamp((currentTime - 3.05) / 2.8, 0, 1);
+      home.style.transform += ` translateY(${-10 * easeInOut(inputP)}px)`;
+
+      const library = document.querySelector(".library-shot-main");
+      const libP = clamp((currentTime - 9.45) / 2.4, 0, 1);
+      library.style.transform += ` translateY(${-14 * easeInOut(libP)}px)`;
+
+      const finalButton = document.querySelector(".create-button");
+      const pulse = currentTime > 13.7 ? 1 + Math.sin((currentTime - 13.7) * Math.PI * 4) * 0.018 : 1;
+      finalButton.style.transform += ` scale(${pulse})`;
+    }
+
+    createGridTransition();
+    renderAt(0);
+
+    const timeline = {
+      time(value) {
+        if (typeof value === "number") renderAt(value);
+        return currentTime;
+      },
+      seek(value) {
+        renderAt(Number(value) || 0);
+        return timeline;
+      },
+      progress(value) {
+        if (typeof value === "number") renderAt(value * DURATION);
+        return currentTime / DURATION;
+      },
+      pause() {
+        return timeline;
+      },
+      play() {
+        return timeline;
+      },
+      duration() {
+        return DURATION;
+      }
+    };
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["podifyai-brand-15"] = timeline;
+  </script>
+</body>
+</html>
+
+
+
+
+

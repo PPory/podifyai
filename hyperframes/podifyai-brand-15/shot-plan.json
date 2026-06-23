@@ -1,0 +1,57 @@
+{
+  "project": "podifyai-brand-15",
+  "durationSeconds": 15,
+  "format": "1920x1080",
+  "source": {
+    "localSite": "http://127.0.0.1:5000/",
+    "screenshots": [
+      "assets/screens/home-main.png",
+      "assets/screens/dialog-menu.png",
+      "assets/screens/single-menu.png",
+      "assets/screens/voice-library.png",
+      "assets/screens/library-grid.png",
+      "assets/screens/detail-script.png"
+    ]
+  },
+  "extractedContent": {
+    "brand": "Podify AI",
+    "tagline": "把你的创意转为播客",
+    "inputPrompt": "输入文字、上传文件或粘贴链接，我们帮你生成播客",
+    "keywords": ["对话式", "单人式", "音色选择", "作品集", "播放全部"],
+    "supportingTerms": ["AI 播客生成", "脚本编辑", "音频下载", "创作流程"]
+  },
+  "timeline": [
+    {
+      "time": "0.0-2.9",
+      "scene": "brand-open",
+      "text": ["Podify AI", "把你的创意转为播客"],
+      "motion": "quiet brand lockup with waveform and light data lines"
+    },
+    {
+      "time": "2.9-6.1",
+      "scene": "input-to-podcast",
+      "text": ["输入文字、上传文件或粘贴链接", "我们帮你生成播客"],
+      "motion": "home interface card, source chips, AI route line"
+    },
+    {
+      "time": "6.1-9.5",
+      "scene": "modes-and-voices",
+      "text": ["对话式", "单人式", "音色选择"],
+      "motion": "fast UI cards with data stream and soft click accents"
+    },
+    {
+      "time": "9.5-12.4",
+      "scene": "library-flow",
+      "text": ["创作流程", "作品集", "播放全部"],
+      "motion": "learning path nodes into generated work library"
+    },
+    {
+      "time": "12.4-15.0",
+      "scene": "brand-close",
+      "text": ["Podify AI", "把你的创意转为播客", "创作"],
+      "motion": "return to calm brand lockup"
+    }
+  ],
+  "audio": "assets/audio/podifyai-tech-bed.wav"
+}
+
