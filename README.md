@@ -1,65 +1,68 @@
 # PodifyAI
 
-PodifyAI 是一个面向内容创作的 AI 播客 Web 应用。它把 URL、PDF 或纯文本整理成可播客化的内容，再生成标题、脚本和音频。当前生产链路以 Flask Web 应用为主，音频合成走 SiliconFlow CosyVoice2，标题和脚本生成走 Gemini / OpenAI 兼容接口。
+PodifyAI is a Flask-based AI podcast web app that turns URLs, PDFs, and long text into podcast-ready scripts and generated audio.
 
-## 当前仓库定位
+[Chinese README](README_zh.md) | [Documentation](docs/README.md) | [Deployment guide](docs/deployment/vps-runbook.md) | [Demo video](asset/video/podifyai-product-launch.mp4)
 
-- 当前 GitHub 仓库的主要交付对象是 PodifyAI Web 应用，不再是原始的 MOSS-TTSD 模型说明页。
-- 仓库里仍保留部分模型相关文件，方便兼容、研究或本地实验。
-- 如果你只是部署 Web 产品，优先关注 `requirements-web.txt`、`requirements-ec2.txt`、`VPS_DEPLOY_RUNBOOK.md` 和 `deploy/`。
+![PodifyAI home screen](hyperframes/podifyai-brand-15/assets/screens/home-main.png)
 
-## 项目状态
+## Project Status
 
-- 当前项目处于早期开源阶段，主要由个人维护。
-- 仓库已经公开，包含许可证、环境变量模板、部署文档和基础测试。
-- 目前没有公开托管的在线 Demo，也没有可夸大的用户量或下载量。
-- 之前曾在 AWS 上部署并做过小范围试用，后续会继续完善文档、测试、部署稳定性和安全检查。
-- 欢迎通过 issue 提出问题、复现步骤、部署反馈或改进建议。
+- PodifyAI is an early-stage open-source project maintained primarily by one person.
+- The repository includes a license, environment templates, deployment notes, local demo screenshots, and basic runtime tests.
+- There is no public hosted demo or production usage metric to claim yet.
+- The app has been deployed and tested on a small VPS before; documentation, tests, deployment stability, and security checks will continue to improve.
+- Issues with clear reproduction steps, deployment feedback, and focused improvement ideas are welcome.
 
-## 主要能力
+## What It Does
 
-- URL、PDF、纯文本三种输入方式
-- 先创作播客内容，再合成音频；也支持直接对粘贴文本合成
-- Gemini 自动生成标题，失败时使用内容兜底
-- 单人 / 多人音频合成
-- 用户登录、OTP、找回密码、资料更新
-- 个人音色库和管理员全局音色管理
-- 历史记录、在线播放、时长更新、文件访问权限校验
-- 积分消耗、Stripe 订阅和充值流程
-- 适合单机部署：SQLite + 本地音频 / PDF 存储
+- Imports content from URLs, PDFs, or pasted text.
+- Generates podcast titles and scripts through Gemini or an OpenAI-compatible API.
+- Synthesizes single-speaker or multi-speaker audio with SiliconFlow CosyVoice2.
+- Manages user accounts, OTP verification, password reset, and profile updates.
+- Stores voice presets, personal voice references, generation history, and playback metadata.
+- Supports credits, Stripe subscriptions, and one-time credit packs.
+- Runs as a single-server app with SQLite and local file storage.
 
-## 技术栈
+## Why This Repository Exists
 
-- 后端：Flask、SQLAlchemy、Flask-Login、Flask-Migrate
-- 前端：原生 HTML + JavaScript
-- 数据库：SQLite
-- 音频合成：SiliconFlow CosyVoice2 API
-- 文本生成：Gemini / OpenAI-compatible API
-- 部署：Gunicorn + systemd + Nginx
+This repository is focused on the PodifyAI web product. It was built from the MOSS-TTSD ecosystem and still keeps selected model-related files for compatibility, research, and local experiments.
 
-## 目录结构
+If you want the original MOSS-TTSD model project, use the upstream OpenMOSS repository. If you want the deployable PodifyAI web app, start here.
+
+## Tech Stack
+
+- Backend: Flask, SQLAlchemy, Flask-Login, Flask-Migrate
+- Frontend: HTML, CSS, vanilla JavaScript
+- Database: SQLite
+- Text generation: Gemini or OpenAI-compatible API
+- Speech synthesis: SiliconFlow CosyVoice2 API
+- Production runtime: Gunicorn, systemd, Nginx
+
+## Repository Layout
 
 ```text
-app.py            Flask 应用入口
-models.py         数据模型
-auth.py           登录、注册、OTP、账号相关接口
-content.py        URL / PDF / 文本内容提取与脚本生成
-tts.py            标题生成与音频合成
-voices.py         音色库与管理员音色管理
-history.py        历史记录与音频访问
-billing.py        积分、订阅、支付相关接口
-static/           前端脚本
-templates/        登录、注册页面
-deploy/           EC2、Nginx、systemd 示例文件
-tests/            运行检查与 smoke tests
+app.py                 Flask app factory and route registration
+auth.py                Login, registration, OTP, and account APIs
+content.py             URL, PDF, and text processing
+tts.py                 Title generation and audio synthesis
+voices.py              Personal and admin voice library
+history.py             Audio history and protected file access
+billing.py             Credits, subscriptions, and Stripe routes
+static/                Browser-side scripts and styles
+templates/             Login and registration pages
+deploy/                systemd, Gunicorn, and Nginx examples
+docs/                  Project documentation
+tests/                 Runtime and integration smoke tests
+legacy/                Historical MOSS-TTSD material kept for reference
 ```
 
-## 本地启动
+## Quick Start
 
-### 1. 安装依赖
+### 1. Create a virtual environment
 
 ```bash
-git clone <your-github-repo-url> podifyai
+git clone https://github.com/PPory/podifyai.git
 cd podifyai
 python -m venv .venv
 ```
@@ -70,95 +73,85 @@ Windows:
 .venv\Scripts\activate
 ```
 
-macOS / Linux:
+macOS or Linux:
 
 ```bash
 source .venv/bin/activate
 ```
 
-继续安装：
+### 2. Install web dependencies
 
 ```bash
-pip install --upgrade pip
+python -m pip install --upgrade pip
 pip install -r requirements-web.txt
 ```
 
-### 2. 配置环境变量
+### 3. Configure environment variables
 
 ```bash
-cp .env.example .env.local
+cp .env.local.example .env.local
 ```
 
-至少需要填写：
+Required values:
 
 - `SECRET_KEY`
 - `ALLOWED_ORIGINS`
 - `SILICONFLOW_API_KEY`
 - `OPENAI_API_KEY`
 
-按需再填写：
+Optional integrations include SendGrid, SMTP, Stripe, Twilio, Aliyun SMS, and Tencent Cloud SMS. See `.env.local.example` for the full list. `.env.example` is kept as a shorter reference.
 
-- `SENDGRID_*` 或 SMTP 配置
-- `STRIPE_*`
-- OTP 服务商相关配置
-
-完整示例见 `.env.example`。
-
-### 3. 启动项目
+### 4. Run the app
 
 ```bash
 python app.py
 ```
 
-默认访问地址：`http://127.0.0.1:5000`
+Open `http://127.0.0.1:5000`.
 
-## 常用检查命令
+## Verification
+
+Use these checks before committing changes:
 
 ```bash
 python -X utf8 -m unittest discover -s tests -v
 python -X utf8 -c "import app; print('IMPORT_OK')"
 node --check static/api.js
-node --check static/synth.js
-node --check static/history.js
 node --check static/player.js
+node --check static/history.js
+node --check static/synth.js
+node --check static/script.js
 ```
 
-## 生产部署
+## Deployment
 
-部署文档已经按分工整理成三层：
+For a small production deployment, use a Linux VPS with Gunicorn, systemd, Nginx, SQLite, and local storage.
 
-- `VPS_DEPLOY_RUNBOOK.md`：主手册，包含完整部署、HTTPS、日常更新和排障
-- `EC2_DEPLOY.md`：快速部署清单，只保留最短操作路径
-- `deploy/ec2/README.md`：部署目录说明，解释各个脚本和模板的用途
+- [Full VPS runbook](docs/deployment/vps-runbook.md)
+- [Short EC2/VPS checklist](docs/deployment/ec2-deploy.md)
+- [Deployment file reference](deploy/ec2/README.md)
 
-如果你是在 Linux 服务器上直接部署，安装依赖时使用 `requirements-ec2.txt`。
+## Documentation
 
-## 依赖说明
+Start with the [documentation index](docs/README.md).
 
-- `requirements-web.txt`：Web 应用运行依赖
-- `requirements-ec2.txt`：EC2 / VPS 部署最小依赖
-- `requirements-model.txt`：模型 / 本地推理相关依赖
-- `requirements.txt`：当前项目总依赖集合
+Main areas:
 
-## 文档索引
+- [Local demo screenshots](DEMO.md)
+- [Roadmap](ROADMAP.md)
+- [Authentication APIs](docs/api/auth-api.md)
+- [Credits system](docs/billing/credits-system.md)
+- [Stripe integration](docs/billing/stripe-integration.md)
+- [Voice management](docs/features/voice-management.md)
+- [SendGrid integration](docs/integrations/sendgrid.md)
+- [Database setup](docs/deployment/database-setup.md)
 
-- `DEMO.md`：本地演示截图与主要使用流程
-- `CONTRIBUTING.md`：参与贡献与反馈说明
-- `SECURITY.md`：安全问题报告方式
-- `ROADMAP.md`：近期维护计划
-- `CODEX_HANDOFF.md`：本轮重构与遗留事项说明
-- `AUTH_API_README.md`：认证接口说明
-- `README_CREDITS_SYSTEM.md`：积分系统说明
-- `STRIPE_INTEGRATION_GUIDE.md`：Stripe 支付说明
-- `VOICE_MANAGEMENT_GUIDE.md`：音色管理说明
-- `SENDGRID_INTEGRATION_README.md`：邮件发送说明
-- `DATABASE_SETUP_README.md`：数据库初始化说明
-- `VPS_DEPLOY_RUNBOOK.md`：VPS / EC2 全流程部署与排障手册
-- `EC2_DEPLOY.md`：EC2 快速部署清单
-- `deploy/ec2/README.md`：部署文件说明
+## Open Source Notes
 
-## 备注
+PodifyAI keeps Apache 2.0 licensing. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-- 当前默认是单机架构，`app.db`、`history_audio/`、`pdf_storage/` 都保存在当前机器上。
-- 如果后续要做多机部署，需要把数据库和文件存储拆出去。
-- 如果你想查看原始 MOSS-TTSD 模型说明，应参考上游 OpenMOSS 项目文档，而不是当前这个 README。
+This repository includes work derived from or inspired by OpenMOSS / MOSS-TTSD. The `legacy/` directory is retained as historical reference and is not the main entry point for PodifyAI.
+
+## Contributing
+
+Contributions are welcome after the repository is made public. Please read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before opening issues or pull requests.

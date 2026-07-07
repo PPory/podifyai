@@ -1,4 +1,6 @@
-# Codex 交接文档 — PodifyAI 代码重构续工
+# Codex handoff notes
+
+This is a historical maintenance note. It is kept for context only and may not match the current repository layout.
 
 ## 你是谁，在做什么
 
@@ -12,7 +14,7 @@
 
 | 文件 | 读什么 |
 |---|---|
-| `CLAUDE.md` | 项目架构总览、运行命令、关键文件说明 |
+| `docs/maintenance/claude-notes.md` | 历史项目架构总览、运行命令、关键文件说明 |
 | `app.py` | 主后端，4950 行，Flask 单文件，47 个路由 |
 | `static/script.js` | 主前端，5797 行，单 IIFE |
 | `migrations/versions/` | 11 个 migration 文件，了解数据库 schema 演化 |

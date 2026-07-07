@@ -3,10 +3,10 @@
 这份文档只解释 `deploy/ec2/` 目录里的文件用途。
 
 如果你要看完整部署流程、域名、HTTPS、排障和日常更新，请直接看：
-- `VPS_DEPLOY_RUNBOOK.md`
+- [docs/deployment/vps-runbook.md](../../docs/deployment/vps-runbook.md)
 
 如果你只想快速照着命令部署，请看：
-- `EC2_DEPLOY.md`
+- [docs/deployment/ec2-deploy.md](../../docs/deployment/ec2-deploy.md)
 
 ## 目录内文件分工
 
@@ -75,8 +75,8 @@ sudo systemctl start podifyai
 ## 推荐搭配方式
 
 完整部署时，建议按这个关系理解：
-- `VPS_DEPLOY_RUNBOOK.md`：主手册
-- `EC2_DEPLOY.md`：最短路径清单
+- `docs/deployment/vps-runbook.md`：主手册
+- `docs/deployment/ec2-deploy.md`：最短路径清单
 - `deploy/ec2/start.sh`：启动脚本
 - `deploy/ec2/update.sh.example`：更新脚本模板
 - `deploy/ec2/podifyai.service.example`：systemd 模板
@@ -128,6 +128,6 @@ curl -I http://127.0.0.1/
 
 ## 什么时候看哪份文档
 
-- 想从零部署一台新服务器：看 `VPS_DEPLOY_RUNBOOK.md`
-- 想快速照清单操作：看 `EC2_DEPLOY.md`
+- 想从零部署一台新服务器：看 `docs/deployment/vps-runbook.md`
+- 想快速照清单操作：看 `docs/deployment/ec2-deploy.md`
 - 想知道 `deploy/ec2/` 里的每个文件是干什么的：看本文件

@@ -1,4 +1,6 @@
-# CLAUDE.md
+# Claude Notes
+
+This is a historical maintenance note. It is kept for context only and may not match the current PodifyAI product README.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 

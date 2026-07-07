@@ -2,7 +2,13 @@
 
 PodifyAI is an early-stage open-source project. Contributions, bug reports, deployment notes, and documentation improvements are welcome.
 
-## Good first contributions
+## Before You Start
+
+- Read the main [README](README.md) and the [documentation index](docs/README.md).
+- Keep changes focused. Avoid unrelated cleanup in the same pull request.
+- Do not commit secrets, local databases, generated audio, uploaded PDFs, or personal voice files.
+
+## Good First Contributions
 
 - Report a clear bug with reproduction steps.
 - Improve setup or deployment documentation.
@@ -10,36 +16,47 @@ PodifyAI is an early-stage open-source project. Contributions, bug reports, depl
 - Improve error messages or validation around user input.
 - Review security-sensitive flows such as authentication, file access, and API key handling.
 
-## Before opening an issue
+## Local Setup
 
-Please include:
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements-web.txt
+cp .env.local.example .env.local
+python app.py
+```
 
-- What you expected to happen.
-- What actually happened.
-- Steps to reproduce the issue.
-- Your operating system and Python version.
-- Relevant logs with secrets removed.
+On macOS or Linux, activate the environment with:
 
-## Before opening a pull request
+```bash
+source .venv/bin/activate
+```
 
-Please keep changes focused and small. A good pull request should:
+## Checks
 
-- Explain the problem it solves.
-- Avoid unrelated refactoring.
-- Include tests or a clear verification note when possible.
-- Avoid committing `.env`, database files, generated audio, uploaded files, logs, or API keys.
-
-## Local checks
+Run these before opening a pull request:
 
 ```bash
 python -X utf8 -m unittest discover -s tests -v
 python -X utf8 -c "import app; print('IMPORT_OK')"
 node --check static/api.js
-node --check static/synth.js
-node --check static/history.js
 node --check static/player.js
+node --check static/history.js
+node --check static/synth.js
+node --check static/script.js
 ```
+
+## Pull Request Guidelines
+
+- Explain what changed and why.
+- Mention any migration, environment variable, or deployment impact.
+- Include screenshots for UI changes.
+- Include test results or explain why a check could not be run.
+
+## Reporting Issues
+
+Use the issue templates in `.github/ISSUE_TEMPLATE/`. Include clear reproduction steps, expected behavior, actual behavior, logs, and environment details.
 
 ## Security
 
-Please do not open public issues containing secrets, private user data, server credentials, or exploit details. Use the process in `SECURITY.md`.
+Do not open public issues containing secrets, private user data, server credentials, or exploit details. Use the process in [SECURITY.md](SECURITY.md).

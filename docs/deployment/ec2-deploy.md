@@ -3,7 +3,7 @@
 这份文档只保留最短上线路径。
 
 如果你要看完整流程、排障经验和常见问题，主文档请看：
-- `VPS_DEPLOY_RUNBOOK.md`
+- [vps-runbook.md](vps-runbook.md)
 
 适用场景：
 - 单台 AWS EC2
@@ -207,4 +207,4 @@ chmod +x deploy/ec2/update.sh
 - `nslookup your-domain.com`
 
 如果要看完整排障说明，直接回到：
-- `VPS_DEPLOY_RUNBOOK.md`
+- [vps-runbook.md](vps-runbook.md)
