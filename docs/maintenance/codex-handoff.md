@@ -16,11 +16,11 @@ This is a historical maintenance note. It is kept for context only and may not m
 |---|---|
 | `docs/maintenance/claude-notes.md` | 历史项目架构总览、运行命令、关键文件说明 |
 | `app.py` | 主后端，4950 行，Flask 单文件，47 个路由 |
-| `static/script.js` | 主前端，5797 行，单 IIFE |
+| `podifyai/static/script.js` | 主前端，5797 行，单 IIFE |
 | `migrations/versions/` | 11 个 migration 文件，了解数据库 schema 演化 |
-| `.env.local.example` | 全部 30+ 环境变量的说明 |
-| `requirements-web.txt` | Web 层依赖 |
-| `requirements-model.txt` | 模型层依赖（本地 GPU 推理，生产不需要） |
+| `.env.example` | 全部 30+ 环境变量的说明 |
+| `requirements/web.txt` | Web 层依赖 |
+| `requirements/model.txt` | 模型层依赖（本地 GPU 推理，生产不需要） |
 
 **不需要读**：`_archive/`（已归档的死代码和旧文档）、`config.py`（已归档）。
 
@@ -29,7 +29,7 @@ This is a historical maintenance note. It is kept for context only and may not m
 ## 已完成的工作（不要重做）
 
 ### P0 Bug 修复（全部完成）
-1. `requirements.txt` 版本修正 + 拆分为 `requirements-web.txt` / `requirements-model.txt`
+1. `requirements.txt` 版本修正 + 拆分为 `requirements/web.txt` / `requirements/model.txt`
 2. Migrations 多头分叉修复 → `merge_original_input_branch.py`
 3. FFMPEG_DIR 去硬编码 → `os.environ.get("FFMPEG_DIR", "")`
 4. 文件上传加校验 → `_validate_audio_upload()` + `MAX_CONTENT_LENGTH=50MB`
@@ -42,7 +42,7 @@ This is a historical maintenance note. It is kept for context only and may not m
 - `SF_TTS_MODEL` 默认值改为 `FunAudioLLM/CosyVoice2-0.5B`
 - 新增 `drop_speech_onset_ms` migration
 - 归档 `tools/diagnose_moss_ttsd.py`，删除 `diag_*.mp3/wav`、`debug_last_tts.wav`
-- `.env.local.example` 扩充到 79 行覆盖全部变量
+- `.env.example` 扩充到 79 行覆盖全部变量
 
 ### Batch 3 快赢（完成）
 - `python-dotenv` 直接 import，删除自制脆弱 fallback loader
@@ -146,14 +146,14 @@ flask db upgrade                   # migration 链正常
 
 ---
 
-### 任务 B — `static/script.js` 拆模块
+### 任务 B — `podifyai/static/script.js` 拆模块
 
 **现状**：5797 行单 IIFE，所有逻辑混在一起。
 
 **目标结构**（ES module 或传统多文件按顺序 `<script>` 加载均可，推荐传统多文件以避免改 HTML）：
 
 ```
-static/
+podifyai/static/
   api.js          ← apiPost + apiGet + 集中错误处理（已存在于 script.js 头部）
   player.js       ← playerManager class（约 280 行，script.js:280-560）
   history.js      ← loadHistory / renderHistoryGrid / history card 相关（约 400 行）
@@ -165,7 +165,7 @@ static/
 
 **拆分步骤建议**：
 1. 先不改 `script.js`，把要抽取的函数复制到新文件，验证无重复定义
-2. 在 `index.html` 的 `<script>` 标签中按顺序加载新文件（api.js → player.js → voice.js → history.js → synth.js → settings.js → script.js）
+2. 在 `podifyai/templates/index.html` 的 `<script>` 标签中按顺序加载新文件（api.js → player.js → voice.js → history.js → synth.js → settings.js → script.js）
 3. 逐步从 `script.js` 中删除已迁移的代码
 4. 确保 `playerManager`、`selectedVoiceIds`、`historyItems` 等跨模块共享状态通过一个 `state.js` 或 `window.*` 管理（现在已经部分挂在 `window` 上）
 
@@ -256,7 +256,7 @@ def serve_history_audio(filename):
 1. **每完成一个任务先跑语法检查**：
    ```bash
    python -X utf8 -c "import ast; ast.parse(open('app.py', encoding='utf-8').read()); print('OK')"
-   node --check static/script.js
+   node --check podifyai/static/script.js
    ```
 
 2. **不要改 migration 文件**：数据库 schema 已经稳定，不要新建 migration（除非任务 C 需要补列）。

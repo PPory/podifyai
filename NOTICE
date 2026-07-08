@@ -2,7 +2,7 @@ PodifyAI
 
 This project is licensed under the Apache License, Version 2.0. See LICENSE.
 
-This repository contains work derived from or inspired by the OpenMOSS / MOSS-TTSD ecosystem. Historical MOSS-TTSD material is retained under legacy/ for compatibility, research, and reference.
+This repository contains work derived from or inspired by the OpenMOSS / MOSS-TTSD ecosystem. Historical MOSS-TTSD material is retained under research/ for compatibility, research, and reference.
 
 Third-party service integrations include SiliconFlow, Gemini or OpenAI-compatible APIs, Stripe, SendGrid, and optional SMS providers. Their names, APIs, and services remain the property of their respective owners.
 

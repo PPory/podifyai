@@ -5,6 +5,8 @@ This directory keeps detailed project documentation out of the repository root w
 ## Product and Operation
 
 - [Demo guide](demo-guide.md)
+- [Local demo screenshots](demo.md)
+- [Roadmap](roadmap.md)
 - [Voice management](features/voice-management.md)
 - [Credits system](billing/credits-system.md)
 - [Subscription management](billing/subscription-management.md)
@@ -37,4 +39,4 @@ This directory keeps detailed project documentation out of the repository root w
 
 ## Historical Model Material
 
-The `legacy/` directory keeps historical MOSS-TTSD material for reference. It is not the primary PodifyAI web app entry point.
+The `research/` directory keeps historical MOSS-TTSD material for reference. It is not the primary PodifyAI web app entry point.

@@ -98,10 +98,10 @@ AWS Security Group 至少要开：
 - 不把密钥直接拼进命令参数
 - 不把 `.env.local` 暴露给 Nginx 或 Web 根目录
 
-建议从 `.env.local.example` 复制：
+建议从 `.env.example` 复制：
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 chmod 600 .env.local
 ```
 
@@ -147,16 +147,16 @@ cd /opt/podifyai
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements-ec2.txt
+pip install -r requirements/ec2.txt
 ```
 
 生产部署优先使用：
-- `requirements-ec2.txt`
+- `requirements/ec2.txt`
 
 说明：
-- `requirements-web.txt`：Web 运行依赖
-- `requirements-ec2.txt`：服务器部署最小依赖
-- `requirements-model.txt`：模型 / 本地推理扩展依赖
+- `requirements/web.txt`：Web 运行依赖
+- `requirements/ec2.txt`：服务器部署最小依赖
+- `requirements/model.txt`：模型 / 本地推理扩展依赖
 
 ## 6. 初始化数据库
 
@@ -180,7 +180,7 @@ PY
 ```bash
 cd /opt/podifyai
 source .venv/bin/activate
-python create_admin_user.py
+python tools/create_admin_user.py
 ```
 
 ### 6.3 如果想直接用初始化脚本
@@ -188,20 +188,21 @@ python create_admin_user.py
 ```bash
 cd /opt/podifyai
 source .venv/bin/activate
-python init_db.py
+python tools/init_db.py
 ```
 
 注意：
-- `init_db.py` 会创建默认管理员账号
+- `tools/init_db.py` 会创建默认管理员账号
 - 默认密码必须立刻修改
-- 生产环境更推荐先建表，再通过 `create_admin_user.py` 设置管理员
+- 生产环境更推荐先建表，再通过 `tools/create_admin_user.py` 设置管理员
 
 ## 7. 启动前自检
 
 ```bash
 cd /opt/podifyai
 source .venv/bin/activate
-python -m py_compile app.py auth.py billing.py content.py decorators.py extensions.py history.py models.py services.py static_routes.py tts.py voices.py wsgi.py gunicorn.conf.py init_db.py
+python -m py_compile app.py wsgi.py deploy/gunicorn.conf.py tools/init_db.py tools/create_admin_user.py
+python -m py_compile podifyai/*.py
 python -X utf8 -m unittest discover -s tests -v
 python -X utf8 -c "import app; print('IMPORT_OK')"
 ```
@@ -405,7 +406,7 @@ curl -I http://your-domain.com/
 cd /opt/podifyai
 source .venv/bin/activate
 git pull --ff-only origin main
-pip install -r requirements-ec2.txt
+pip install -r requirements/ec2.txt
 python -m unittest discover -s tests -v
 sudo systemctl restart podifyai
 sudo systemctl status podifyai --no-pager
@@ -444,7 +445,7 @@ sudo systemctl restart podifyai
 
 仓库层面已经通过 `.gitattributes` 固定了这些文件应使用 LF。
 
-### 14.2 `init_db.py` 执行时报 `user_id` 为空
+### 14.2 `tools/init_db.py` 执行时报 `user_id` 为空
 
 表现：
 - 初始化管理员账号时报 `NOT NULL constraint failed: user_api_key.user_id`
@@ -456,7 +457,7 @@ sudo systemctl restart podifyai
 
 如果你用的是旧版本：
 - 升级代码后再执行
-- 或临时改用“先 `db.create_all()`，再 `create_admin_user.py`”
+- 或临时改用“先 `db.create_all()`，再 `tools/create_admin_user.py`”
 
 ### 14.3 服务器本机 `curl http://127.0.0.1/` 正常，但公网打不开
 

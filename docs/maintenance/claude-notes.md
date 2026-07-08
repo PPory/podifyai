@@ -20,15 +20,15 @@ The project consists of:
 
 **Core Components:**
 - `modeling_asteroid.py`: Main `AsteroidTTSInstruct` model implementation (transformer-based)
-- `generation_utils.py`: Model loading, JSONL processing, and batch inference utilities
+- `research/generation_utils.py`: Model loading, JSONL processing, and batch inference utilities
 - `XY_Tokenizer/`: Speech codec module (1kbps RVQ8 quantization at 12.5Hz)
   - Dual-channel architecture: semantic + acoustic modeling
   - Converts audio ↔ discrete tokens with minimal quality loss
 
 **Inference Scripts:**
-- `inference.py`: Standard batch inference
+- `research/inference.py`: Standard batch inference
 - `streamer.py`: Streaming inference (chunked decoding, ~20s chunks)
-- `gradio_demo.py`: Gradio web UI for local testing
+- `research/gradio_demo.py`: Gradio web UI for local testing
 
 ### 2. Web Application (app.py)
 
@@ -54,8 +54,8 @@ The project consists of:
 ### 3. Frontend
 
 **Structure:**
-- `templates/`: Login/register HTML pages
-- `static/`: Main JS files
+- `podifyai/templates/`: Login/register HTML pages
+- `podifyai/static/`: Main JS files
   - `script.js`: Primary UI logic (synthesis, history, voice library, player)
   - `auth.js`: Authentication flows
 
@@ -103,7 +103,7 @@ huggingface-cli download fnlp/XY_Tokenizer_TTSD_V0 xy_tokenizer.ckpt --local-dir
 
 **Local Inference:**
 ```bash
-python inference.py --jsonl examples/examples.jsonl --output_dir outputs --seed 42 --use_normalize --silence_duration 0
+python research/inference.py --jsonl examples/examples.jsonl --output_dir outputs --seed 42 --use_normalize --silence_duration 0
 ```
 
 **Streaming Inference:**
@@ -113,7 +113,7 @@ python streamer.py --jsonl examples/examples.jsonl --output_dir outputs/streamer
 
 **Gradio Demo:**
 ```bash
-python gradio_demo.py
+python research/gradio_demo.py
 ```
 
 **Flask Web App:**
@@ -195,12 +195,12 @@ python finetune/finetune_workflow.py --config finetune/finetune_config.yaml
 
 **Initialize database:**
 ```bash
-python init_db.py
+python tools/init_db.py
 ```
 
 **Create admin user:**
 ```bash
-python create_admin_user.py
+python tools/create_admin_user.py
 ```
 
 **Run migrations:**

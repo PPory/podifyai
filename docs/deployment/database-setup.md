@@ -26,7 +26,7 @@ pip install -r requirements.txt
 
 ### 2. 初始化数据库
 ```bash
-python init_db.py
+python tools/init_db.py
 ```
 
 这将创建：
@@ -89,7 +89,7 @@ python app.py
 
 ### 数据迁移
 如果需要将现有JSON数据迁移到数据库，可以：
-1. 备份现有的 `voices.json` 和 `history.json` 文件
+1. 如需保留旧数据，备份 `research/legacy-data/voices.json` 和本地 `history.json`
 2. 编写迁移脚本将数据导入数据库
 3. 验证数据完整性
 

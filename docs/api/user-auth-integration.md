@@ -21,7 +21,7 @@ def index():
 - 只有登录用户才能访问主应用页面
 - 未登录用户会被自动重定向到登录页面
 
-### 2. `index.html` - 添加用户信息UI ✅
+### 2. `podifyai/templates/index.html` - 添加用户信息UI ✅
 
 **修改位置**: 侧边栏导航栏底部 `.nav-footer` 容器内
 
@@ -45,7 +45,7 @@ def index():
 - 提供登出按钮
 - 默认隐藏，通过JavaScript控制显示
 
-### 3. `static/style.css` - 美化用户UI ✅
+### 3. `podifyai/static/style.css` - 美化用户UI ✅
 
 **新增样式**:
 ```css
@@ -95,7 +95,7 @@ def index():
 - 登出按钮使用红色，突出重要性
 - 响应式设计，支持悬停效果
 
-### 4. `static/script.js` - 整合用户状态检查 ✅
+### 4. `podifyai/static/script.js` - 整合用户状态检查 ✅
 
 **重构架构**:
 - 将原有的 `DOMContentLoaded` 事件处理程序重构为两个函数：
@@ -241,9 +241,9 @@ graph TD
 | 文件 | 修改类型 | 主要变更 |
 |------|----------|----------|
 | `app.py` | 新增 | 添加 `@login_required` 装饰器 |
-| `index.html` | 新增 | 侧边栏用户信息UI结构 |
-| `static/style.css` | 新增 | 用户UI样式定义 |
-| `static/script.js` | 重构 | 整合用户状态检查逻辑 |
+| `podifyai/templates/index.html` | 新增 | 侧边栏用户信息UI结构 |
+| `podifyai/static/style.css` | 新增 | 用户UI样式定义 |
+| `podifyai/static/script.js` | 重构 | 整合用户状态检查逻辑 |
 
 ## 部署说明
 

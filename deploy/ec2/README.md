@@ -19,7 +19,7 @@
 默认行为：
 - 自动定位项目根目录
 - 使用 `/opt/podifyai/.venv/bin/gunicorn`
-- 读取 `gunicorn.conf.py`
+- 读取 `deploy/gunicorn.conf.py`
 - 启动 `wsgi:app`
 
 典型用法：
@@ -37,7 +37,7 @@ chmod +x deploy/ec2/start.sh
 
 默认做的事：
 - 拉取最新代码
-- 安装 `requirements-ec2.txt`
+- 安装 `requirements/ec2.txt`
 - 跑测试
 - 重启 `podifyai` 服务
 

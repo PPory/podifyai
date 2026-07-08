@@ -4,7 +4,6 @@
 .env.local
 !.env.example
 !.env.template
-!.env.local.example
 
 # 数据库
 app.db
@@ -25,9 +24,9 @@ debug_last_tts.wav
 debug_heads/
 diag_*.mp3
 diag_*.wav
-asset/video/raw-demo.mp4
-asset/video/raw-*.mp4
-asset/video/*-raw.mp4
+showcase/assets/video/raw-demo.mp4
+showcase/assets/video/raw-*.mp4
+showcase/assets/video/*-raw.mp4
 __pycache__/
 *.pyc
 *.pyo

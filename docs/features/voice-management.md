@@ -22,7 +22,7 @@
 python -m flask db upgrade
 
 # 创建管理员用户
-python create_admin_user.py
+python tools/create_admin_user.py
 ```
 
 ### 2. 启动应用

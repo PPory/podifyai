@@ -8,13 +8,13 @@
 
 ### 1. HTML 模板文件
 
-#### `templates/login.html`
+#### `podifyai/templates/login.html`
 - 用户登录页面
 - 包含用户名和密码输入字段
 - 响应式设计，支持移动端
 - 集成表单验证和错误处理
 
-#### `templates/register.html`
+#### `podifyai/templates/register.html`
 - 用户注册页面
 - 包含用户名和密码输入字段
 - 客户端密码强度验证
@@ -22,7 +22,7 @@
 
 ### 2. JavaScript 文件
 
-#### `static/auth.js`
+#### `podifyai/static/auth.js`
 - 处理登录和注册表单提交
 - 异步API调用
 - 错误处理和用户反馈
@@ -31,7 +31,7 @@
 
 ### 3. CSS 样式
 
-#### `static/style.css` (新增认证样式)
+#### `podifyai/static/style.css` (新增认证样式)
 - 完整的认证页面样式
 - 响应式设计，适配移动设备
 - 暗色主题支持
@@ -44,11 +44,11 @@
 
 #### `GET /login`
 - 渲染登录页面
-- 返回 `templates/login.html`
+- 返回 `podifyai/templates/login.html`
 
 #### `GET /register`
 - 渲染注册页面
-- 返回 `templates/register.html`
+- 返回 `podifyai/templates/register.html`
 
 ## 页面功能
 
@@ -115,7 +115,7 @@
 ### 1. 启动应用
 ```bash
 # 确保数据库已初始化
-python init_db.py
+python tools/init_db.py
 
 # 启动Flask应用
 python app.py

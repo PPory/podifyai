@@ -1,10 +1,10 @@
 # PodifyAI — full dependency list (web app + local TTS model)
 #
 # For web-app-only deployment (no local GPU inference):
-#   pip install -r requirements-web.txt
+#   pip install -r requirements/web.txt
 #
 # For full local inference + web app:
 #   pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu128
 
--r requirements-web.txt
--r requirements-model.txt
+-r requirements/web.txt
+-r requirements/model.txt

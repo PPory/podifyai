@@ -7,11 +7,11 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from services import resolve_title_from_content
+from podifyai.services import resolve_title_from_content
 
 
 def main():
-    with patch('services.generate_title_with_gemini', return_value='Smoke 标题'):
+    with patch('podifyai.services.generate_title_with_gemini', return_value='Smoke 标题'):
         title = resolve_title_from_content(
             explicit_title='',
             source_title='',

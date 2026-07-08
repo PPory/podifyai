@@ -47,7 +47,7 @@ git clone <your-github-repo-url> .
 ## 4. 配置环境变量
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 chmod 600 .env.local
 ```
 
@@ -72,7 +72,7 @@ SESSION_COOKIE_SECURE=false
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements-ec2.txt
+pip install -r requirements/ec2.txt
 ```
 
 ## 6. 初始化数据库
@@ -91,13 +91,14 @@ PY
 如需管理员账号：
 
 ```bash
-python create_admin_user.py
+python tools/create_admin_user.py
 ```
 
 ## 7. 自检
 
 ```bash
-python -m py_compile app.py auth.py billing.py content.py decorators.py extensions.py history.py models.py services.py static_routes.py tts.py voices.py wsgi.py gunicorn.conf.py init_db.py
+python -m py_compile app.py wsgi.py deploy/gunicorn.conf.py tools/init_db.py tools/create_admin_user.py
+python -m py_compile podifyai/*.py
 python -X utf8 -m unittest discover -s tests -v
 python -X utf8 -c "import app; print('IMPORT_OK')"
 ```
@@ -183,7 +184,7 @@ curl -I http://your-domain.com/
 cd /opt/podifyai
 source .venv/bin/activate
 git pull --ff-only origin main
-pip install -r requirements-ec2.txt
+pip install -r requirements/ec2.txt
 python -m unittest discover -s tests -v
 sudo systemctl restart podifyai
 ```

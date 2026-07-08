@@ -1,0 +1,71 @@
+{
+  "project": "PodifyAI",
+  "durationSeconds": 30,
+  "outputAspectRatio": "16:9",
+  "source": "../../assets/video/raw-demo.mp4",
+  "output": "../../assets/video/podifyai-product-launch.mp4",
+  "style": {
+    "font": "Inter, PingFang SC, Microsoft YaHei, Arial, sans-serif",
+    "background": "#0f1014",
+    "accent": "#e91e63",
+    "tone": "clean technology product launch"
+  },
+  "segments": [
+    {
+      "clip": "assets/clips/01-input.mp4",
+      "sourceStartSeconds": 0,
+      "sourceDurationSeconds": 4.2,
+      "timelineStartSeconds": 0,
+      "role": "opening and input surface"
+    },
+    {
+      "clip": "assets/clips/02-generate.mp4",
+      "sourceStartSeconds": 30,
+      "sourceDurationSeconds": 4.2,
+      "timelineStartSeconds": 3.6,
+      "role": "URL or content processing"
+    },
+    {
+      "clip": "assets/clips/03-script.mp4",
+      "sourceStartSeconds": 90,
+      "sourceDurationSeconds": 4.2,
+      "timelineStartSeconds": 7.3,
+      "role": "generated podcast script"
+    },
+    {
+      "clip": "assets/clips/04-voices.mp4",
+      "sourceStartSeconds": 60,
+      "sourceDurationSeconds": 3.6,
+      "timelineStartSeconds": 11,
+      "role": "single or two-speaker voice mode"
+    },
+    {
+      "clip": "assets/clips/05-synthesis.mp4",
+      "sourceStartSeconds": 120,
+      "sourceDurationSeconds": 4,
+      "timelineStartSeconds": 14,
+      "role": "one-click synthesis progress"
+    },
+    {
+      "clip": "assets/clips/06-player.mp4",
+      "sourceStartSeconds": 190,
+      "sourceDurationSeconds": 4,
+      "timelineStartSeconds": 17.8,
+      "role": "browser playback and progress bar"
+    },
+    {
+      "clip": "assets/clips/07-history.mp4",
+      "sourceStartSeconds": 220,
+      "sourceDurationSeconds": 3.2,
+      "timelineStartSeconds": 21.5,
+      "role": "history list"
+    },
+    {
+      "clip": "assets/clips/08-final.mp4",
+      "sourceStartSeconds": 260,
+      "sourceDurationSeconds": 3,
+      "timelineStartSeconds": 24.2,
+      "role": "final product frame and CTA"
+    }
+  ]
+}

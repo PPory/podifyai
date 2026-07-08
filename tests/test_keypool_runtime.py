@@ -9,11 +9,11 @@ if str(ROOT) not in sys.path:
 import unittest
 from unittest.mock import patch
 
-from services import resolve_title_from_content
+from podifyai.services import resolve_title_from_content
 
 
 class TitleResolutionTests(unittest.TestCase):
-    @patch('services.generate_title_with_gemini', return_value='模型生成标题')
+    @patch('podifyai.services.generate_title_with_gemini', return_value='模型生成标题')
     def test_manual_input_prefers_generated_title(self, mock_generate):
         title = resolve_title_from_content(
             explicit_title='',
@@ -25,7 +25,7 @@ class TitleResolutionTests(unittest.TestCase):
         self.assertEqual('模型生成标题', title)
         mock_generate.assert_called_once()
 
-    @patch('services.generate_title_with_gemini', side_effect=RuntimeError('boom'))
+    @patch('podifyai.services.generate_title_with_gemini', side_effect=RuntimeError('boom'))
     def test_manual_input_falls_back_when_generation_fails(self, mock_generate):
         title = resolve_title_from_content(
             explicit_title='',
@@ -37,7 +37,7 @@ class TitleResolutionTests(unittest.TestCase):
         self.assertEqual('用于回退的标题文本', title)
         mock_generate.assert_called_once()
 
-    @patch('services.generate_title_with_gemini')
+    @patch('podifyai.services.generate_title_with_gemini')
     def test_real_source_title_skips_generation(self, mock_generate):
         title = resolve_title_from_content(
             explicit_title='',

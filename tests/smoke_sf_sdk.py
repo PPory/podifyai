@@ -6,7 +6,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from services import API_KEYS, get_siliconflow_client
+from podifyai.services import API_KEYS, get_siliconflow_client
 
 
 def main():
